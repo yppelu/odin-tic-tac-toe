@@ -19,7 +19,50 @@
 </head>
 
 <body>
-
+  <header class="header">
+    <ul class="header__game-modes-list">
+      <li class="header__game-mode-choice">Friend</li>
+      <li class="header__game-mode-choice">AI: easy</li>
+      <li class="header__game-mode-choice">AI: hard</li>
+    </ul>
+    <p class="header__new-game-button">New game</p>
+  </header>
+  <main class="main">
+    <div class="players">
+      <div class="players__player">
+        <svg class="players__player-symbol" xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24">
+          <path
+            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+        </svg>
+        <input class="players__player-name" type="text" maxlength="10"></input>
+        <p class="players__player-score"></p>
+      </div>
+      <div class="players__player">
+        <svg class="players__player-symbol" xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24">
+          <path
+            d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+        </svg>
+        <input class="players__player-name" type="text" maxlength="10"></input>
+        <p class="players__player-score"></p>
+      </div>
+    </div>
+    <div class="game-board-wrapper">
+      <div class="game-board">
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+        <div class="game-board__cell"></div>
+      </div>
+    </div>
+  </main>
+  <footer class="footer"></footer>
 </body>
 
 </html>
