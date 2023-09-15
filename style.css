@@ -84,12 +84,13 @@ h6 {
 
 :root {
   --body-bg-color: #FFFFFF;
-  --button-bg-color: #FFFFFF;
-  --button-border-color: #DADCE0;
   --cross-color: #545454;
   --game-board-color: #14BDAC;
   --game-cell-border-color: #0DA192;
+  --active-button-color: #121212;
   --nought-color: #F2EBD3;
+  --player-bg-color: #FFFFFF;
+  --player-border-color: #DADCE0;
   --player-symbol-color: #FFFFFF;
   --text-color: #70757A;
 }
@@ -102,15 +103,54 @@ body {
   font-weight: 400;
 }
 
+.button {
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.button:hover {
+  color: var(--active-button-color);
+}
+
+/* Header styles */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 10px;
+}
+
+.header__game-mode-choice-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+}
+
+.header__game-mode-choice-title {}
+
+.header__game-mode-choice {}
+
+.header__game-modes-list {
+  display: flex;
+  gap: 1ch;
+}
+
+.header__game-mode-button {}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --body-bg-color: #121212;
-    --button-bg-color: #202124;
-    --button-border-color: #3C4043;
     --cross-color: #545454;
     --game-board-color: #14BDAC;
     --game-cell-border-color: #0DA192;
+    --active-button-color: #DADCE0;
     --nought-color: #F2EBD3;
+    --player-bg-color: #202124;
+    --player-border-color: #3C4043;
     --player-symbol-color: #000000;
     --text-color: #9AA0A6;
   }

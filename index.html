@@ -20,12 +20,27 @@
 
 <body>
   <header class="header">
-    <ul class="header__game-modes-list">
-      <li class="header__game-mode-choice">Friend</li>
-      <li class="header__game-mode-choice">AI: easy</li>
-      <li class="header__game-mode-choice">AI: hard</li>
-    </ul>
-    <p class="header__new-game-button">New game</p>
+    <div class="header__game-mode-choice-wrapper">
+      <p class="header__game-mode-choice-title">Game Mode:</p>
+      <ul class="header__game-modes-list">
+        <li class="header__game-mode-choice">
+          <button class="button header__game-mode-button" type="button">
+            Friend
+          </button>
+        </li>
+        <li class="header__game-mode-choice">
+          <button class="button header__game-mode-button" type="button">
+            AI easy
+          </button>
+        </li>
+        <li class="header__game-mode-choice">
+          <button class="button header__game-mode-button" type="button">
+            AI hard
+          </button>
+        </li>
+      </ul>
+    </div>
+    <button class="button header__new-game-button">New Game</button>
   </header>
   <main class="main">
     <div class="players">
