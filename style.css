@@ -1,0 +1,89 @@
+/* FONTS */
+
+@font-face {
+  font-family: "Roboto";
+  src:
+    local("Roboto"),
+    url("./fonts/Roboto/Roboto-Regular.woff2") format("woff2"),
+    url("./fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+  font-stretch: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src:
+    local("Roboto"),
+    url("./fonts/Roboto/Roboto-Bold.woff2") format("woff2"),
+    url("./fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+  font-stretch: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 700;
+}
+
+/* RESET */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+ul,
+ul li {
+  list-style: none;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+button,
+textarea,
+select {
+  color: inherit;
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* Overall styles */
+
+body {
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
