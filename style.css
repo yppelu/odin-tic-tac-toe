@@ -154,7 +154,6 @@ body {
 
 .players {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   padding: 10px;
@@ -165,11 +164,12 @@ body {
   border-radius: 5px;
 
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
 
   border: 1px solid var(--player-border-color);
-  padding: 5px 1ch;
+  padding: 5px 15px;
   height: 2rem;
+  width: 125px;
 }
 
 .players__player-symbol {
@@ -177,20 +177,6 @@ body {
   stroke-width: 3;
   min-height: 20px;
   min-width: 20px;
-}
-
-.players__player-name {
-  appearance: none;
-  background-color: transparent;
-  border: none;
-
-  border-bottom: 1px solid var(--player-border-color);
-  padding: 0 1ch;
-  width: 12ch;
-}
-
-.players__player-name:focus {
-  outline: none;
 }
 
 .players__player-score {
