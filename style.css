@@ -98,7 +98,8 @@ h6 {
   --body-bg-clr: #DEDEEE;
   --button-bg-clr: #019A4F;
   --button-text-clr: #FFFFFF;
-  --header-bg-clr: #FFFFFF;
+  --game-cell-border-clr: radial-gradient(circle, #B4D5DC 0%, #FFFFFF 100%);
+  --section-bg-clr: #FFFFFF;
   --shadow-clr: #1E3F4E;
   --text-clr: #1E3F4E;
   --title-text-clr: #011724;
@@ -119,8 +120,8 @@ body {
 /* Header styles */
 
 .header {
-  background-color: var(--header-bg-clr);
-  box-shadow: 0 0 5px var(--shadow-clr);
+  background-color: var(--section-bg-clr);
+  box-shadow: 0 0 5px -1px var(--shadow-clr);
 
   padding: 0 1rem;
 }
@@ -150,7 +151,9 @@ body {
   border: none;
   padding: 8px 16px;
 
-  transition: all 0.15s ease-in-out;
+  transition:
+    box-shadow 0.15s ease,
+    margin-top 0.15s ease;
 }
 
 .header__new-game-btn:active {
@@ -160,18 +163,70 @@ body {
 
 /* Main styles */
 
-.main {}
+/* Statistics styles */
 
-.statistics {}
+.statistics__content-wrapper {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
 
-.statistics__playerX {}
+  margin: 16px auto;
+}
 
-.statistics__player-name {}
+.statistics__player {
+  background-color: var(--section-bg-clr);
+  box-shadow: 0 3px 5px -3px var(--shadow-clr);
 
-.statistics__player-score {}
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 
-.statistics-playerO {}
+  padding: 8px 16px;
+  height: 2rem;
+  width: 200px;
+}
 
-.game-board {}
+.statistics__player-name,
+.statistics__player-score {
+  font-weight: 500;
+}
 
-.game-board__cell {}
+/* Game Board Styles */
+
+.game-block-wrapper {
+  background-color: var(--section-bg-clr);
+
+  display: flex;
+  justify-content: center;
+
+  padding: 16px;
+}
+
+.game-board {
+  background: var(--game-cell-border-clr);
+
+  display: grid;
+  gap: 4px;
+  grid-template: repeat(3, 80px) / repeat(3, 80px);
+}
+
+.game-board__cell {
+  background-color: var(--section-bg-clr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-bg-clr: #1e3f4e;
+    --button-bg-clr: #019A4F;
+    --button-text-clr: #FFFFFF;
+    --game-cell-border-clr: radial-gradient(circle, #B4D5DC 0%, #011724 70%);
+    --section-bg-clr: #011724;
+    --shadow-clr: #011724;
+    --text-clr: #DEDEEE;
+    --title-text-clr: #FFFFFF;
+  }
+}
