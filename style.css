@@ -82,18 +82,7 @@ h6 {
 
 /* Overall styles */
 
-.dark {
-  --body-bg-color: #121212;
-  --button-bg-color: #202124;
-  --button-border-color: #3C4043;
-  --cross-color: #545454;
-  --game-board-color: #14BDAC;
-  --game-cell-border-color: #0DA192;
-  --nought-color: #F2EBD3;
-  --text-color: #9AA0A6;
-}
-
-.light {
+:root {
   --body-bg-color: #FFFFFF;
   --button-bg-color: #FFFFFF;
   --button-border-color: #DADCE0;
@@ -110,4 +99,17 @@ body {
   font-family: Roboto, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-bg-color: #121212;
+    --button-bg-color: #202124;
+    --button-border-color: #3C4043;
+    --cross-color: #545454;
+    --game-board-color: #14BDAC;
+    --game-cell-border-color: #0DA192;
+    --nought-color: #F2EBD3;
+    --text-color: #9AA0A6;
+  }
 }
