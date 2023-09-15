@@ -146,6 +146,7 @@ body {
 .main {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   align-items: center;
 }
 
@@ -153,7 +154,10 @@ body {
 
 .players {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
+  padding: 10px;
 }
 
 .players__player {
@@ -171,6 +175,8 @@ body {
 .players__player-symbol {
   stroke: var(--player-symbol-color);
   stroke-width: 3;
+  min-height: 20px;
+  min-width: 20px;
 }
 
 .players__player-name {
@@ -194,12 +200,26 @@ body {
 
 /* Game styles */
 
-.game-board-wrapper {}
+.game-board-wrapper {
+  background-color: var(--game-board-color);
 
-.game-board {}
+  display: flex;
+  justify-content: center;
 
-.game-board__cell {}
+  padding: 10px;
+  width: 100%;
+}
 
+.game-board {
+  background-color: var(--game-cell-border-color);
+  display: grid;
+  grid-template: repeat(3, 80px) / repeat(3, 80px);
+  gap: 6px;
+}
+
+.game-board__cell {
+  background-color: var(--game-board-color);
+}
 
 @media (prefers-color-scheme: dark) {
   :root {
