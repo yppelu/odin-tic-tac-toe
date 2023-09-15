@@ -93,3 +93,85 @@ h6 {
 }
 
 /* Overall styles */
+
+:root {
+  --body-bg-clr: #DEDEEE;
+  --button-bg-clr: #019A4F;
+  --button-text-clr: #FFFFFF;
+  --header-bg-clr: #FFFFFF;
+  --shadow-clr: #1E3F4E;
+  --text-clr: #1E3F4E;
+  --title-text-clr: #011724;
+}
+
+body {
+  background-color: var(--body-bg-clr);
+  color: var(--text-clr);
+  font-family: "Roboto", Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+}
+
+/* Header styles */
+
+.header {
+  background-color: var(--header-bg-clr);
+  box-shadow: 0 0 5px var(--shadow-clr);
+
+  padding: 0 1rem;
+}
+
+.header__content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 0 auto;
+  padding: 0.5rem 0;
+  height: 100%;
+}
+
+.header__title {
+  color: var(--title-text-clr);
+}
+
+.header__new-game-btn {
+  appearance: none;
+  background-color: var(--button-bg-clr);
+  border-radius: 8px;
+  box-shadow: 0 4px 5px -2px var(--shadow-clr);
+  color: var(--button-text-clr);
+  cursor: pointer;
+
+  border: none;
+  padding: 8px 16px;
+
+  transition: all 0.15s ease-in-out;
+}
+
+.header__new-game-btn:active {
+  box-shadow: 0 4px 5px -3px var(--shadow-clr);
+  margin-top: 3px;
+}
+
+/* Main styles */
+
+.main {}
+
+.statistics {}
+
+.statistics__playerX {}
+
+.statistics__player-name {}
+
+.statistics__player-score {}
+
+.statistics-playerO {}
+
+.game-board {}
+
+.game-board__cell {}
