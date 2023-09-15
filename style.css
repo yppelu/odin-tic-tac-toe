@@ -91,7 +91,7 @@ h6 {
   --nought-color: #F2EBD3;
   --player-bg-color: #FFFFFF;
   --player-border-color: #DADCE0;
-  --player-symbol-color: #FFFFFF;
+  --player-symbol-color: #222222;
   --text-color: #70757A;
 }
 
@@ -141,6 +141,66 @@ body {
 
 .header__game-mode-button {}
 
+/* Main styles */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Players styles */
+
+.players {
+  display: flex;
+  gap: 10px;
+}
+
+.players__player {
+  background-color: var(--player-bg-color);
+  border-radius: 5px;
+
+  display: flex;
+  gap: 20px;
+
+  border: 1px solid var(--player-border-color);
+  padding: 5px 1ch;
+  height: 2rem;
+}
+
+.players__player-symbol {
+  stroke: var(--player-symbol-color);
+  stroke-width: 3;
+}
+
+.players__player-name {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+
+  border-bottom: 1px solid var(--player-border-color);
+  padding: 0 1ch;
+  width: 12ch;
+}
+
+.players__player-name:focus {
+  outline: none;
+}
+
+.players__player-score {
+  text-align: center;
+  width: 3ch;
+}
+
+/* Game styles */
+
+.game-board-wrapper {}
+
+.game-board {}
+
+.game-board__cell {}
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --body-bg-color: #121212;
@@ -151,7 +211,7 @@ body {
     --nought-color: #F2EBD3;
     --player-bg-color: #202124;
     --player-border-color: #3C4043;
-    --player-symbol-color: #000000;
+    --player-symbol-color: #DADCE0;
     --text-color: #9AA0A6;
   }
 }
