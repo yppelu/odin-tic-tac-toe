@@ -98,7 +98,7 @@ h6 {
   --body-bg-clr: #DEDEEE;
   --button-bg-clr: #019A4F;
   --button-text-clr: #FFFFFF;
-  --game-cell-border-clr: radial-gradient(circle, #B4D5DC 0%, #FFFFFF 100%);
+  --game-cell-border-clr: #B4D5DC;
   --section-bg-clr: #FFFFFF;
   --shadow-clr: #1E3F4E;
   --text-clr: #1E3F4E;
@@ -204,7 +204,7 @@ body {
 }
 
 .game-board {
-  background: var(--game-cell-border-clr);
+  background-color: var(--game-cell-border-clr);
 
   display: grid;
   gap: 4px;
@@ -218,12 +218,12 @@ body {
   justify-content: center;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --body-bg-clr: #1e3f4e;
     --button-bg-clr: #019A4F;
     --button-text-clr: #FFFFFF;
-    --game-cell-border-clr: radial-gradient(circle, #B4D5DC 0%, #011724 70%);
+    --game-cell-border-clr: #B4D5DC;
     --section-bg-clr: #011724;
     --shadow-clr: #011724;
     --text-clr: #DEDEEE;
