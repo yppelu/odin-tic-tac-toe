@@ -98,6 +98,7 @@ h6 {
   --body-bg-clr: #DEDEEE;
   --button-bg-clr: #019A4F;
   --button-text-clr: #FFFFFF;
+  --form-wrapper-bg-clr: #DEDEEE99;
   --game-cell-border-clr: #B4D5DC;
   --section-bg-clr: #FFFFFF;
   --shadow-clr: #1E3F4E;
@@ -225,7 +226,7 @@ body {
 /* Form Styles */
 
 .game-parameters-form-wrapper {
-  backdrop-filter: blur(10px);
+  background-color: var(--form-wrapper-bg-clr);
 
   position: fixed;
   inset: 0 0 0 0;
@@ -291,11 +292,12 @@ body {
   width: 16ch;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --body-bg-clr: #1E3F4E;
     --button-bg-clr: #019A4F;
     --button-text-clr: #FFFFFF;
+    --form-wrapper-bg-clr: #1E3F4E99;
     --game-cell-border-clr: #B4D5DC;
     --section-bg-clr: #011724;
     --shadow-clr: #011724;
