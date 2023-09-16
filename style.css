@@ -113,8 +113,35 @@ body {
   font-weight: 400;
 }
 
+.hidden {
+  display: none;
+}
+
 .content-wrapper {
   max-width: 1200px;
+}
+
+.button {
+  appearance: none;
+  background-color: var(--button-bg-clr);
+  border-radius: 8px;
+  box-shadow: 0 4px 5px -2px var(--shadow-clr);
+  color: var(--button-text-clr);
+  cursor: pointer;
+  transition:
+    box-shadow 0.15s ease,
+    margin-bottom 0.15s ease,
+    margin-top 0.15s ease;
+
+  border: none;
+  padding: 8px 16px;
+}
+
+
+.button:active {
+  box-shadow: 0 4px 5px -3px var(--shadow-clr);
+  margin-bottom: -3px;
+  margin-top: 3px;
 }
 
 /* Header styles */
@@ -138,27 +165,6 @@ body {
 
 .header__title {
   color: var(--title-text-clr);
-}
-
-.header__new-game-btn {
-  appearance: none;
-  background-color: var(--button-bg-clr);
-  border-radius: 8px;
-  box-shadow: 0 4px 5px -2px var(--shadow-clr);
-  color: var(--button-text-clr);
-  cursor: pointer;
-
-  border: none;
-  padding: 8px 16px;
-
-  transition:
-    box-shadow 0.15s ease,
-    margin-top 0.15s ease;
-}
-
-.header__new-game-btn:active {
-  box-shadow: 0 4px 5px -3px var(--shadow-clr);
-  margin-top: 3px;
 }
 
 /* Main styles */
@@ -214,6 +220,75 @@ body {
 .game-board__cell {
   background-color: var(--section-bg-clr);
   padding: 5px;
+}
+
+/* Form Styles */
+
+.game-parameters-form-wrapper {
+  backdrop-filter: blur(10px);
+
+  position: fixed;
+  inset: 0 0 0 0;
+}
+
+.game-parameters-form {
+  background-color: var(--section-bg-clr);
+  border-radius: 8px;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 2px solid var(--text-clr);
+  padding: 16px;
+}
+
+.game-parameters-form__fieldset {
+  border: 1px solid var(--text-clr);
+  margin-bottom: 16px;
+  padding-left: 0 8px;
+}
+
+.game-parameters-form__legend {
+  font-weight: 500;
+  margin-left: 1ch;
+  padding: 0 0.5ch;
+}
+
+.game-parameters-form__label {
+  display: flex;
+  gap: 1ch;
+  align-items: center;
+
+  margin: 8px;
+  width: max-content;
+}
+
+.game-parameters-form__radio {
+  appearance: none;
+  border-radius: 50%;
+  outline: var(--text-clr) solid 1px;
+  outline-offset: 2px;
+
+  border: none;
+  height: 1ch;
+  width: 1ch;
+}
+
+.game-parameters-form__radio:checked {
+  background-color: var(--text-clr);
+}
+
+.game-parameters-form__name-input {
+  appearance: none;
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  color: #011724;
+
+  border: 1px solid var(--text-clr);
+  padding: 0 0.5ch;
+  width: 16ch;
 }
 
 @media (prefers-color-scheme: dark) {
