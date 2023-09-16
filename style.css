@@ -292,7 +292,15 @@ body {
   width: 16ch;
 }
 
-@media (prefers-color-scheme: light) {
+/* Nought and Cross SVG Styles */
+
+.x-line1,
+.x-line2,
+.o-circle {
+  stroke: var(--title-text-clr);
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
     --body-bg-clr: #1E3F4E;
     --button-bg-clr: #019A4F;
