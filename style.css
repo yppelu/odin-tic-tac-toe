@@ -100,6 +100,7 @@ h6 {
   --button-text-clr: #FFFFFF;
   --form-wrapper-bg-clr: #DEDEEE99;
   --game-cell-border-clr: #B4D5DC;
+  --readonly-input-bg-clr: #AAAAAA;
   --section-bg-clr: #FFFFFF;
   --shadow-clr: #1E3F4E;
   --text-clr: #1E3F4E;
@@ -293,7 +294,7 @@ body {
 }
 
 .game-parameters-form__name-input[readonly] {
-  opacity: 0.75;
+  background-color: var(--readonly-input-bg-clr);
 }
 
 /* Nought and Cross SVG Styles */
@@ -319,6 +320,7 @@ body {
     --button-text-clr: #FFFFFF;
     --form-wrapper-bg-clr: #1E3F4E99;
     --game-cell-border-clr: #B4D5DC;
+    --readonly-input-bg-clr: #AAAAAA;
     --section-bg-clr: #011724;
     --shadow-clr: #011724;
     --text-clr: #DEDEEE;
