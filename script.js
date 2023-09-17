@@ -29,9 +29,10 @@ let playerX, playerO;
     playerX = createPlayer(playerXNameInput.value, '1');
     playerO = createPlayer(playerONameInput.value, '2');
 
+    statistics.refreshStatistics();
     gameParametersFormWrapper.classList.add('hidden');
-    gameParametersForm.reset();
     playerONameInput.removeAttribute('readonly');
+    gameParametersForm.reset();
   });
 
   function chooseGameMode(radioButton) {
@@ -50,8 +51,26 @@ let playerX, playerO;
   function createPlayer(name, playerNumber) {
     return {
       name: name || `Player ${playerNumber}`,
-      wins: 0
+      score: 0
     }
   }
 
+})();
+
+const statistics = (function () {
+  const playerXName = document.querySelector('.statistics__player-name[data-player="X"]');
+  const playerXScore = document.querySelector('.statistics__player-score[data-player="X"]');
+  const playerOName = document.querySelector('.statistics__player-name[data-player="O"]');
+  const playerOScore = document.querySelector('.statistics__player-score[data-player="O"]');
+
+  function refreshStatistics() {
+    playerXName.textContent = playerX.name;
+    playerXScore.textContent = playerX.score;
+    playerOName.textContent = playerO.name;
+    playerOScore.textContent = playerO.score;
+  }
+
+  return {
+    refreshStatistics
+  }
 })();
