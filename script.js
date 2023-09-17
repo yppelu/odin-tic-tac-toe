@@ -208,6 +208,7 @@ const gameProcess = (function () {
   }
 
   function startGame(gameMode) {
+    turn = 0;
     if (gameMode === 'friend') {
       boardCells.forEach((cell, index) => {
         cell.addEventListener('click', () => {
