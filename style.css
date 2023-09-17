@@ -208,7 +208,35 @@ body {
   display: flex;
   justify-content: center;
 
+  position: relative;
+
   padding: 16px;
+}
+
+.game-next-round-block {
+  background-color: var(--section-bg-clr);
+  border-radius: 8px;
+  box-shadow: 0 0 8px 2px var(--shadow-clr);
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+
+  transform: translate(-50%, -50%);
+
+  border: 2px solid var(--game-cell-border-clr);
+  padding: 16px;
+}
+
+.game-next-round__title {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.game-next-round-block__button {
+  min-width: max-content;
 }
 
 .game-board {
@@ -224,13 +252,17 @@ body {
   padding: 5px;
 }
 
+.game-board__playerMark {
+  transition: all 1s ease;
+}
+
 /* Form Styles */
 
 .game-parameters-form-wrapper {
   background-color: var(--form-wrapper-bg-clr);
 
   position: fixed;
-  inset: 0 0 0 0;
+  inset: 0;
 }
 
 .game-parameters-form {

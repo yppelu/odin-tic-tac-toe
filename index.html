@@ -32,6 +32,12 @@
     </div>
   </section>
   <section class="game-block-wrapper">
+    <div class="game-next-round-block hidden">
+      <p class="game-next-round__title"></p>
+      <button class="button game-next-round-block__button" type="button">
+        ONE MORE ROUND?
+      </button>
+    </div>
     <div class="game-board">
       <div class="game-board__cell"></div>
       <div class="game-board__cell"></div>
@@ -56,12 +62,12 @@
         <label class="game-parameters-form__label">
           <input class="game-parameters-form__radio" type="radio"
             name="game-mode" data-game-mode="easy-ai">
-          vs. AI easy
+          vs. AI Easy
         </label>
         <label class="game-parameters-form__label">
           <input class="game-parameters-form__radio" type="radio"
             name="game-mode" data-game-mode="hard-ai">
-          vs. AI hard
+          vs. AI Hard
         </label>
       </fieldset>
       <fieldset class="game-parameters-form__fieldset">
