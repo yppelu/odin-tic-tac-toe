@@ -115,10 +115,6 @@ body {
   font-weight: 400;
 }
 
-.hidden {
-  display: none;
-}
-
 .content-wrapper {
   max-width: 1200px;
 }
@@ -214,25 +210,36 @@ body {
 }
 
 .game-next-round-block {
-  background-color: var(--section-bg-clr);
-  border-radius: 8px;
-  box-shadow: 0 0 8px 2px var(--shadow-clr);
+  background-color: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   position: absolute;
   left: 50%;
   top: 50%;
   z-index: 1;
-
   transform: translate(-50%, -50%);
 
-  border: 2px solid var(--game-cell-border-clr);
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  width: 100%;
+}
+
+.game-next-round__content-wrapper {
+  background-color: var(--section-bg-clr);
+  border-radius: 8px;
+  box-shadow: 0 0 5px 2px var(--shadow-clr);
+
+  border: 2px solid var(--text-clr);
   padding: 16px;
 }
 
 .game-next-round__title {
   font-size: 1.5rem;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
 }
 
 .game-next-round-block__button {
@@ -327,6 +334,11 @@ body {
 
 .game-parameters-form__name-input[readonly] {
   background-color: var(--readonly-input-bg-clr);
+}
+
+/* At the very and to have a higher priority */
+.hidden {
+  display: none;
 }
 
 @media (prefers-color-scheme: dark) {
