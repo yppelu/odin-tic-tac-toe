@@ -297,22 +297,6 @@ body {
   background-color: var(--readonly-input-bg-clr);
 }
 
-/* Nought and Cross SVG Styles */
-
-.x-line1,
-.x-line2,
-.o-circle {
-  stroke: var(--title-text-clr);
-}
-
-.x-line1 {
-  transition: all 0.5s ease;
-}
-
-.x-line2 {
-  transition: all 0.5s ease 0.5s;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --body-bg-clr: #1E3F4E;
