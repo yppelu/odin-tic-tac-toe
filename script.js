@@ -22,6 +22,7 @@ let playerX, playerO;
   startGameButton.addEventListener('click', () => {
     gameParametersFormWrapper.classList.remove('hidden');
     gameBoard.clearBoard();
+    gameProcess.closeNextRoundBlock();
   });
 
   gameModeFriendRadio.onload = chooseGameMode(gameModeFriendRadio);
@@ -181,6 +182,10 @@ const gameProcess = (function () {
     return false;
   }
 
+  function closeNextRoundBlock() {
+    nexRoundBlock.classList.add('hidden');
+  }
+
   function gamePVP() {
     if (checkWinner()) {
       showWin(...roundWinner);
@@ -217,6 +222,7 @@ const gameProcess = (function () {
   }
 
   return {
+    closeNextRoundBlock,
     startGame
   }
 
