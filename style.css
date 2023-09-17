@@ -263,6 +263,36 @@ body {
   transition: all 1s ease;
 }
 
+.x-line1,
+.x-line2,
+.o-circle {
+  animation-name: mark-appearance;
+  animation-fill-mode: forwards;
+}
+
+.x-line1,
+.x-line2 {
+  animation-duration: 0.25s;
+}
+
+.x-line2 {
+  animation-delay: 0.25s;
+}
+
+.o-circle {
+  animation-name: mark-appearance;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes mark-appearance {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+
+
 /* Form Styles */
 
 .game-parameters-form-wrapper {
