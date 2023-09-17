@@ -204,7 +204,7 @@ const gameProcess = (function () {
     player.score++;
     statistics.refreshStatistics();
     nextRoundBlockTitle.textContent = `${player.name} wins!`;
-    setTimeout(() => { nexRoundBlock.classList.remove('hidden'); }, 500);
+    nexRoundBlock.classList.remove('hidden');
   }
 
   function startGame(gameMode) {
