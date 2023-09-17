@@ -292,12 +292,24 @@ body {
   width: 16ch;
 }
 
+.game-parameters-form__name-input[readonly] {
+  opacity: 0.75;
+}
+
 /* Nought and Cross SVG Styles */
 
 .x-line1,
 .x-line2,
 .o-circle {
   stroke: var(--title-text-clr);
+}
+
+.x-line1 {
+  transition: all 0.5s ease;
+}
+
+.x-line2 {
+  transition: all 0.5s ease 0.5s;
 }
 
 @media (prefers-color-scheme: dark) {

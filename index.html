@@ -14,8 +14,9 @@
   <header class="header">
     <div class="content-wrapper header__content-wrapper">
       <h1 class="header__title">Tic Tac Toe</h1>
-      <button class="button" type="button">New
-        Game</button>
+      <button class="button header__start-game-button" type="button">
+        New Game
+      </button>
     </div>
   </header>
   <section class="statistics">
@@ -49,17 +50,17 @@
         <legend class="game-parameters-form__legend">Game Mode</legend>
         <label class="game-parameters-form__label">
           <input class="game-parameters-form__radio" type="radio"
-            name="game-mode" checked>
+            name="game-mode" data-game-mode="friend" checked>
           vs. Friend
         </label>
         <label class="game-parameters-form__label">
           <input class="game-parameters-form__radio" type="radio"
-            name="game-mode">
+            name="game-mode" data-game-mode="easy-ai">
           vs. AI easy
         </label>
         <label class="game-parameters-form__label">
           <input class="game-parameters-form__radio" type="radio"
-            name="game-mode">
+            name="game-mode" data-game-mode="hard-ai">
           vs. AI hard
         </label>
       </fieldset>
@@ -68,15 +69,15 @@
         <label class="game-parameters-form__label">
           Player X name:
           <input class="game-parameters-form__name-input" type="text"
-            name="player1-name" maxlength="14" placeholder="Player 1">
+            name="playerX-name" maxlength="14" placeholder="Player 1">
         </label>
         <label class="game-parameters-form__label">
           Player O name:
           <input class="game-parameters-form__name-input" type="text"
-            name="player2-name" maxlength="14" placeholder="Player 2">
+            name="playerO-name" maxlength="14" placeholder="Player 2">
         </label>
       </fieldset>
-      <button class="button" type="submit">
+      <button class="button game-parameters-form__submit-form" type="submit">
         Start Game
       </button>
     </form>
