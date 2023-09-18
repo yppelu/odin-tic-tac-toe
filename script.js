@@ -50,7 +50,7 @@ let playerX, playerO;
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
     playerONameInput.removeAttribute('readonly');
-    gameParametersForm.reset();
+    resetForm();
   });
 
   function chooseAiPlayer(radioButton) {
@@ -100,6 +100,12 @@ let playerX, playerO;
       name: name || `Player ${playerNumber}`,
       score: 0
     }
+  }
+
+  function resetForm() {
+    gameParametersForm.reset();
+    chooseGameMode(gameModeFriendRadio);
+    clearChosenForAiInputs();
   }
 
 })();
@@ -226,8 +232,8 @@ const gameProcess = (function () {
         if (cell.innerHTML === '') {
           gameBoard.renderTurn(index, turn);
           if (gameMode === 'friend') gamePVP();
-          if (gameMode === 'easy-ai') gamePVEEasy();
-          if (gameMode === 'hard-ai') gamePVEHard();
+          if (gameMode === 'easy-ai') gamePVP();
+          if (gameMode === 'hard-ai') gamePVP();
           ++turn;
         }
       });
