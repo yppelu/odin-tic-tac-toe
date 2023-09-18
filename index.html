@@ -85,6 +85,20 @@
             name="playerO-name" maxlength="14" placeholder="Player 2">
         </label>
       </fieldset>
+      <fieldset
+        class="game-parameters-form__fieldset game-parameters-form__player-mark-fieldset">
+        <legend class="game-parameters-form__legend">Player's Mark</legend>
+        <label class="game-parameters-form__label">
+          <input class="game-parameters-form__radio" type="radio"
+            name="player-mark" data-player-mark="X" checked>
+          X
+        </label>
+        <label class="game-parameters-form__label">
+          <input class="game-parameters-form__radio" type="radio"
+            name="player-mark" data-player-mark="O">
+          O
+        </label>
+      </fieldset>
       <button class="button game-parameters-form__submit-form" type="submit">
         Start Game
       </button>

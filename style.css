@@ -320,6 +320,10 @@ body {
   padding-left: 0 8px;
 }
 
+.game-parameters-form__player-mark-fieldset {
+  display: flex;
+}
+
 .game-parameters-form__legend {
   font-weight: 500;
   margin-left: 1ch;
@@ -342,6 +346,7 @@ body {
   outline-offset: 2px;
 
   border: none;
+  margin-left: 0.5ch;
   height: 1ch;
   width: 1ch;
 }

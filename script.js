@@ -10,13 +10,10 @@ let playerX, playerO;
   const gameModeHardAiRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
+  const playerMarkXRadio = document.querySelector('[data-player-mark="X"]');
+  const playerMarkORadio = document.querySelector('[data-player-mark="O"]');
   const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
   let chosenGameMode;
-
-  /* Disabled until I make AI logic */
-  gameModeEasyAiRadio.setAttribute('disabled', 'disabled');
-  gameModeHardAiRadio.setAttribute('disabled', 'disabled');
-  /* ------------------------------ */
 
   startGameButton.addEventListener('click', () => {
     gameParametersFormWrapper.classList.remove('hidden');
@@ -32,6 +29,16 @@ let playerX, playerO;
   gameModeHardAiRadio.addEventListener('click', () => {
     chooseGameMode(gameModeHardAiRadio);
   });
+  playerMarkXRadio.addEventListener('click', () => {
+    gameModeEasyAiRadio.checked
+      ? chooseGameMode(gameModeEasyAiRadio)
+      : chooseGameMode(gameModeHardAiRadio);
+  });
+  playerMarkORadio.addEventListener('click', () => {
+    gameModeEasyAiRadio.checked
+      ? chooseGameMode(gameModeEasyAiRadio)
+      : chooseGameMode(gameModeHardAiRadio);
+  });
 
   submitGameParametersButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -45,22 +52,46 @@ let playerX, playerO;
     gameParametersForm.reset();
   });
 
+  function chooseAiPlayer(radioButton) {
+    clearChosenForAiInputs();
+    if (playerMarkXRadio.checked) {
+      playerXNameInput.setAttribute('readonly', '');
+      radioButton === gameModeEasyAiRadio
+        ? playerXNameInput.value = 'Easy AI'
+        : playerXNameInput.value = 'Hard AI';
+    }
+    if (playerMarkORadio.checked) {
+      playerONameInput.setAttribute('readonly', '');
+      radioButton === gameModeEasyAiRadio
+        ? playerONameInput.value = 'Easy AI'
+        : playerONameInput.value = 'Hard AI';
+    }
+  }
+
   function chooseGameMode(radioButton) {
     radioButton.checked = true;
     if (radioButton === gameModeFriendRadio) {
+      chosenGameMode = 'friend';
+      clearChosenForAiInputs();
+    }
+    if (radioButton === gameModeEasyAiRadio) {
+      chosenGameMode = 'easy-ai';
+      chooseAiPlayer(gameModeEasyAiRadio);
+    }
+    if (radioButton === gameModeHardAiRadio) {
+      chosenGameMode = 'hard-ai';
+      chooseAiPlayer(gameModeHardAiRadio);
+    }
+  }
+
+  function clearChosenForAiInputs() {
+    if (playerXNameInput.hasAttribute('readonly')) {
+      playerXNameInput.removeAttribute('readonly');
+      playerXNameInput.value = '';
+    }
+    if (playerONameInput.hasAttribute('readonly')) {
       playerONameInput.removeAttribute('readonly');
       playerONameInput.value = '';
-      chosenGameMode = 'friend';
-    } else {
-      playerONameInput.setAttribute('readonly', '');
-      if (radioButton === gameModeEasyAiRadio) {
-        playerONameInput.value = 'Easy AI';
-        chosenGameMode = 'easy-ai';
-      }
-      if (radioButton === gameModeHardAiRadio) {
-        playerONameInput.value = 'Hard AI';
-        chosenGameMode = 'hard-ai';
-      }
     }
   }
 
