@@ -99,10 +99,8 @@ const gameBoard = (function () {
   }
 
   function renderTurn(index, turn) {
-    if (!board[index]) {
-      board[index] = (turn % 2 === 0) ? 'X' : 'O';
-      renderMark(index);
-    }
+    board[index] = (turn % 2 === 0) ? 'X' : 'O';
+    renderMark(index);
   }
 
   function renderWinner(index1, index2, index3) {
@@ -120,18 +118,14 @@ const gameBoard = (function () {
 })();
 
 const gameProcess = (function () {
-  const nexRoundBlock = document.querySelector('.game-next-round-block');
+  const nextRoundBlock = document.querySelector('.game-next-round-block');
   const nextRoundBlockTitle = document.querySelector('.game-next-round__title');
   const nextRoundButton = document.querySelector('.game-next-round-block__button');
 
   let turn = 0;
   const roundWinner = [];
 
-  nextRoundButton.addEventListener('click', () => {
-    gameBoard.clearBoard();
-    turn = 0;
-    nexRoundBlock.classList.add('hidden');
-  });
+  nextRoundButton.addEventListener('click', startNewRound);
 
   function checkWinner() {
     const board = gameBoard.getBoard();
@@ -139,37 +133,25 @@ const gameProcess = (function () {
       if (board[i]) {
         if (i === 0 || i === 1 || i === 2) {
           if (board[i] === board[i + 3] && board[i] === board[i + 6]) {
-            roundWinner[0] = (board[i] === 'X') ? playerX : playerO;
-            roundWinner[1] = i;
-            roundWinner[2] = i + 3;
-            roundWinner[3] = i + 6;
+            saveWinner(board[i], i, i + 3, i + 6);
             return true;
           }
         }
         if (i === 0 || i === 3 || i === 6) {
           if (board[i] === board[i + 1] && board[i] === board[i + 2]) {
-            roundWinner[0] = (board[i] === 'X') ? playerX : playerO;
-            roundWinner[1] = i;
-            roundWinner[2] = i + 1;
-            roundWinner[3] = i + 2;
+            saveWinner(board[i], i, i + 1, i + 2);
             return true;
           }
         }
         if (i === 0) {
           if (board[i] === board[i + 4] && board[i] === board[i + 8]) {
-            roundWinner[0] = (board[i] === 'X') ? playerX : playerO;
-            roundWinner[1] = i;
-            roundWinner[2] = i + 4;
-            roundWinner[3] = i + 8;
+            saveWinner(board[i], i, i + 4, i + 8);
             return true;
           }
         }
         if (i === 2) {
           if (board[i] === board[i + 2] && board[i] === board[i + 4]) {
-            roundWinner[0] = (board[i] === 'X') ? playerX : playerO;
-            roundWinner[1] = i;
-            roundWinner[2] = i + 2;
-            roundWinner[3] = i + 4;
+            saveWinner(board[i], i, i + 2, i + 4);
             return true;
           }
         }
@@ -187,25 +169,26 @@ const gameProcess = (function () {
     }
   }
 
+  function saveWinner(winnerMark, index1, index2, index3) {
+    roundWinner[0] = (winnerMark === 'X') ? playerX : playerO;
+    [roundWinner[1], roundWinner[2], roundWinner[3]] = [index1, index2, index3];
+  }
+
   function showTie() {
     nextRoundBlockTitle.textContent = 'It is a tie!';
-    nexRoundBlock.classList.remove('hidden');
+    nextRoundBlock.classList.remove('hidden');
   }
 
   function showWin() {
     setTimeout(gameBoard.renderWinner, 0, roundWinner[1], roundWinner[2], roundWinner[3]);
     statistics.refreshStatistics();
     nextRoundBlockTitle.textContent = `${roundWinner[0].name} wins!`;
-    nexRoundBlock.classList.remove('hidden');
+    nextRoundBlock.classList.remove('hidden');
   }
 
   function startGame(gameMode) {
-    if (!nexRoundBlock.classList.contains('hidden')) {
-      nexRoundBlock.classList.add('hidden');
-    }
-    gameBoard.clearBoard();
+    startNewRound();
     statistics.refreshStatistics();
-    turn = 0;
 
     boardCells.forEach((cell, index) => {
       cell.addEventListener('click', () => {
@@ -216,6 +199,14 @@ const gameProcess = (function () {
         }
       });
     });
+  }
+
+  function startNewRound() {
+    gameBoard.clearBoard();
+    turn = 0;
+    if (!nextRoundBlock.classList.contains('hidden')) {
+      nextRoundBlock.classList.add('hidden');
+    }
   }
 
   return {
