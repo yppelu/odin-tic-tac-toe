@@ -10,6 +10,7 @@ let playerX, playerO;
   const gameModeHardAiRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
+  const playerMarkChoiceForm = document.querySelector('.game-parameters-form__player-mark-fieldset');
   const playerMarkXRadio = document.querySelector('[data-player-mark="X"]');
   const playerMarkORadio = document.querySelector('[data-player-mark="O"]');
   const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
@@ -73,14 +74,13 @@ let playerX, playerO;
     if (radioButton === gameModeFriendRadio) {
       chosenGameMode = 'friend';
       clearChosenForAiInputs();
-    }
-    if (radioButton === gameModeEasyAiRadio) {
-      chosenGameMode = 'easy-ai';
-      chooseAiPlayer(gameModeEasyAiRadio);
-    }
-    if (radioButton === gameModeHardAiRadio) {
-      chosenGameMode = 'hard-ai';
-      chooseAiPlayer(gameModeHardAiRadio);
+      playerMarkChoiceForm.classList.add('hidden');
+    } else {
+      chooseAiPlayer(radioButton);
+      playerMarkChoiceForm.classList.remove('hidden');
+      radioButton === gameModeEasyAiRadio
+        ? chosenGameMode = 'easy-ai'
+        : chosenGameMode = 'hard-ai';
     }
   }
 
@@ -226,6 +226,8 @@ const gameProcess = (function () {
         if (cell.innerHTML === '') {
           gameBoard.renderTurn(index, turn);
           if (gameMode === 'friend') gamePVP();
+          if (gameMode === 'easy-ai') gamePVEEasy();
+          if (gameMode === 'hard-ai') gamePVEHard();
           ++turn;
         }
       });
