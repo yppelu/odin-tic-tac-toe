@@ -13,7 +13,6 @@ let playerX, playerO;
   const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
   let chosenGameMode;
 
-
   /* Disabled until I make AI logic */
   gameModeEasyAiRadio.setAttribute('disabled', 'disabled');
   gameModeHardAiRadio.setAttribute('disabled', 'disabled');
@@ -21,8 +20,6 @@ let playerX, playerO;
 
   startGameButton.addEventListener('click', () => {
     gameParametersFormWrapper.classList.remove('hidden');
-    gameBoard.clearBoard();
-    gameProcess.closeNextRoundBlock();
   });
 
   gameModeFriendRadio.onload = chooseGameMode(gameModeFriendRadio);
@@ -42,7 +39,6 @@ let playerX, playerO;
     playerX = createPlayer(playerXNameInput.value, '1');
     playerO = createPlayer(playerONameInput.value, '2');
 
-    statistics.refreshStatistics();
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
     playerONameInput.removeAttribute('readonly');
@@ -110,9 +106,9 @@ const gameBoard = (function () {
   }
 
   function renderWinner(index1, index2, index3) {
-    boardCells[index1].firstChild.style.scale = '2';
-    boardCells[index2].firstChild.style.scale = '2';
-    boardCells[index3].firstChild.style.scale = '2';
+    boardCells[index1].firstChild.style.scale = '1.5';
+    boardCells[index2].firstChild.style.scale = '1.5';
+    boardCells[index3].firstChild.style.scale = '1.5';
   }
 
   return {
@@ -182,13 +178,10 @@ const gameProcess = (function () {
     return false;
   }
 
-  function closeNextRoundBlock() {
-    nexRoundBlock.classList.add('hidden');
-  }
-
   function gamePVP() {
     if (checkWinner()) {
-      showWin(...roundWinner);
+      roundWinner[0].score++;
+      showWin();
     } else if (turn === 8) {
       showTie();
     }
@@ -199,31 +192,33 @@ const gameProcess = (function () {
     nexRoundBlock.classList.remove('hidden');
   }
 
-  function showWin(player, index1, index2, index3) {
-    setTimeout(gameBoard.renderWinner, 100, index1, index2, index3);
-    player.score++;
+  function showWin() {
+    setTimeout(gameBoard.renderWinner, 0, roundWinner[1], roundWinner[2], roundWinner[3]);
     statistics.refreshStatistics();
-    nextRoundBlockTitle.textContent = `${player.name} wins!`;
+    nextRoundBlockTitle.textContent = `${roundWinner[0].name} wins!`;
     nexRoundBlock.classList.remove('hidden');
   }
 
   function startGame(gameMode) {
-    turn = 0;
-    if (gameMode === 'friend') {
-      boardCells.forEach((cell, index) => {
-        cell.addEventListener('click', () => {
-          if (cell.innerHTML === '') {
-            gameBoard.renderTurn(index, turn);
-            gamePVP();
-            ++turn;
-          }
-        });
-      });
+    if (!nexRoundBlock.classList.contains('hidden')) {
+      nexRoundBlock.classList.add('hidden');
     }
+    gameBoard.clearBoard();
+    statistics.refreshStatistics();
+    turn = 0;
+
+    boardCells.forEach((cell, index) => {
+      cell.addEventListener('click', () => {
+        if (cell.innerHTML === '') {
+          gameBoard.renderTurn(index, turn);
+          if (gameMode === 'friend') gamePVP();
+          ++turn;
+        }
+      });
+    });
   }
 
   return {
-    closeNextRoundBlock,
     startGame
   }
 
