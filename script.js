@@ -271,6 +271,15 @@ const gameProcess = (function () {
     return bestCell;
   }
 
+  function finishGame() {
+    boardCells.forEach((cell) => {
+      cell.removeEventListener('click', makePlayerMove);
+    });
+    boardCells.forEach((cell) => {
+      cell.removeEventListener('click', playAiRoundTurn);
+    });
+  }
+
   function gamePVE() {
     if (playerX.isAi) setTimeout(makeAiMove, 250);
     boardCells.forEach((cell) => {
@@ -321,14 +330,14 @@ const gameProcess = (function () {
 
   function showTie() {
     nextRoundBlockTitle.textContent = 'It is a tie!';
-    nextRoundBlock.classList.remove('hidden');
+    setTimeout(() => nextRoundBlock.classList.remove('hidden'), 500);
   }
 
   function showWin() {
     setTimeout(gameBoard.showWinner, 0, roundWinner[1], roundWinner[2], roundWinner[3]);
     statistics.refreshStatistics();
     nextRoundBlockTitle.textContent = `${roundWinner[0].name} wins!`;
-    nextRoundBlock.classList.remove('hidden');
+    setTimeout(() => nextRoundBlock.classList.remove('hidden'), 500);
   }
 
   function startGame(newGameMode) {
@@ -361,8 +370,10 @@ const gameProcess = (function () {
     if (checkWinner(board)) {
       roundWinner[0].score++;
       showWin();
+      finishGame();
     } else if (checkTie(board)) {
       showTie();
+      finishGame();
     }
   }
 
