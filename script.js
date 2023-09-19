@@ -1,6 +1,7 @@
 // GLOBAL VARIABLES
 const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
+const amountOfCells = boardCells.length;
 
 // FORM MODULE
 (function () {
@@ -48,7 +49,7 @@ let playerX, playerO;
   submitGameParametersButton.addEventListener('click', (e) => {
     e.preventDefault();
 
-    createPlayers()
+    createPlayers();
 
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
@@ -109,7 +110,7 @@ let playerX, playerO;
       playerX = createPlayer(playerXNameInput.value, '1', true);
       playerO = createPlayer(playerONameInput.value, '2');
     } else if (playerONameInput.hasAttribute('readonly')) {
-      playerX = createPlayer(playerONameInput.value, '2');
+      playerX = createPlayer(playerXNameInput.value, '1');
       playerO = createPlayer(playerONameInput.value, '2', true);
     } else {
       playerX = createPlayer(playerXNameInput.value, '1');
@@ -143,7 +144,7 @@ const gameBoard = (function () {
   }
 
   function getBoard() {
-    return board;
+    return board.map(cell => cell);
   }
 
   function renderMark(index) {
@@ -179,14 +180,19 @@ const gameProcess = (function () {
   let turn = 0;
   const roundWinner = [];
   let gameMode;
-  let aiTurnRemainder;
   let isMoveCoolDown = false;
 
   nextRoundButton.addEventListener('click', startNewRound);
 
-  function checkWinner() {
-    const board = gameBoard.getBoard();
-    for (let i = 0; i < 7; i++) {
+  function checkTie(board) {
+    for (let i = 0; i < amountOfCells; i++) {
+      if (!board[i]) return false;
+    }
+    return true;
+  }
+
+  function checkWinner(board) {
+    for (let i = 0; i < amountOfCells; i++) {
       if (board[i]) {
         if (i === 0 || i === 1 || i === 2) {
           if (board[i] === board[i + 3] && board[i] === board[i + 6]) {
@@ -218,20 +224,66 @@ const gameProcess = (function () {
   }
 
   function chooseCellForAiMove() {
-    if (gameMode === 'easy-ai' || gameMode === 'hard-ai') {
-      const board = gameBoard.getBoard();
-      let cellIndex;
-      do {
-        cellIndex = Math.floor(Math.random() * 9);
-      } while (board[cellIndex]);
-      return cellIndex;
+    const board = gameBoard.getBoard();
+    if (gameMode === 'easy-ai') return chooseCellForEasyAi(board);
+    if (gameMode === 'hard-ai') return chooseCellForHardAi(board);
+  }
+
+  function chooseCellForEasyAi(board) {
+    let index;
+    do {
+      index = Math.floor(Math.random() * amountOfCells);
+    } while (board[index]);
+    return index;
+  }
+
+  function chooseCellForHardAi(board) {
+    function minimax(board, newTurn, isMaximizing) {
+      if (checkTie(board)) return 0;
+      if (checkWinner(board)) return roundWinner[0].isAi ? 1 : -1;
+      if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < amountOfCells; i++) {
+          if (!board[i]) {
+            board[i] = (newTurn % 2 === 0) ? 'X' : 'O';
+            let score = minimax(board, newTurn + 1, false);
+            board[i] = undefined;
+            bestScore = Math.max(bestScore, score);
+          }
+        }
+        return bestScore;
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < amountOfCells; i++) {
+          if (!board[i]) {
+            board[i] = (newTurn % 2 === 0) ? 'X' : 'O';
+            let score = minimax(board, newTurn + 1, true);
+            board[i] = undefined;
+            bestScore = Math.min(bestScore, score);
+          }
+        }
+        return bestScore;
+      }
     }
+
+    let bestScore = -Infinity;
+    let bestCell;
+    for (let i = 0; i < amountOfCells; i++) {
+      if (!board[i]) {
+        board[i] = (turn % 2 === 0) ? 'X' : 'O';
+        let score = minimax(board, turn + 1, false);
+        board[i] = undefined;
+        if (score > bestScore) {
+          bestScore = score;
+          bestCell = i;
+        }
+      }
+    }
+    return bestCell;
   }
 
   function gamePVE() {
-    aiTurnRemainder = (playerX.isAi) ? 0 : 1;
-    if (aiTurnRemainder === 0) setTimeout(makeAiMove, 250);
-
+    if (playerX.isAi) setTimeout(makeAiMove, 250);
     boardCells.forEach((cell) => {
       cell.addEventListener('click', playAiRoundTurn);
     });
@@ -249,7 +301,7 @@ const gameProcess = (function () {
     const indexToPlaceMark = chooseCellForAiMove();
     gameBoard.renderMove(indexToPlaceMark, turn);
     watchRoundProgress();
-    ++turn;
+    turn++;
 
     setTimeout(() => isMoveCoolDown = false, 500);
   }
@@ -257,19 +309,20 @@ const gameProcess = (function () {
   function makePlayerMove(event) {
     if (isMoveCoolDown) return;
 
-    const cellIndex = boardCells.indexOf(event.target);
-    if (event.target.innerHTML === '') gameBoard.renderMove(cellIndex, turn);
-    watchRoundProgress();
-    ++turn;
+    let cellIndex = boardCells.indexOf(event.target);
+    if (cellIndex !== -1 && event.target.innerHTML === '') {
+      gameBoard.renderMove(cellIndex, turn);
+      watchRoundProgress();
+      turn++;
 
-    isMoveCoolDown = true;
-    setTimeout(() => isMoveCoolDown = false, 500);
+      isMoveCoolDown = true;
+      setTimeout(() => isMoveCoolDown = false, 500);
+    }
   }
 
   function playAiRoundTurn(event) {
     makePlayerMove(event);
-    if (nextRoundBlock.classList.contains('hidden') && turn % 2 === aiTurnRemainder)
-      setTimeout(makeAiMove, 500);
+    if (nextRoundBlock.classList.contains('hidden')) setTimeout(makeAiMove, 500);
   }
 
   function saveWinner(winnerMark, index1, index2, index3) {
@@ -298,18 +351,6 @@ const gameProcess = (function () {
       });
     }
 
-    if (gameMode === 'easy-ai') {
-      boardCells.forEach((cell) => {
-        cell.removeEventListener('click', gamePVP);
-      });
-    }
-
-    if (gameMode === 'hard-ai') {
-      boardCells.forEach((cell) => {
-        cell.removeEventListener('click', gamePVP);
-      });
-    }
-
     statistics.refreshStatistics();
     startNewRound();
   }
@@ -327,10 +368,11 @@ const gameProcess = (function () {
   }
 
   function watchRoundProgress() {
-    if (checkWinner()) {
+    const board = gameBoard.getBoard();
+    if (checkWinner(board)) {
       roundWinner[0].score++;
       showWin();
-    } else if (turn === 8) {
+    } else if (checkTie(board)) {
       showTie();
     }
   }
