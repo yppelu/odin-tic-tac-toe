@@ -1,6 +1,8 @@
+// GLOBAL VARIABLES
 const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
 
+// FORM MODULE
 (function () {
   const startGameButton = document.querySelector('.header__start-game-button');
   const gameParametersFormWrapper = document.querySelector('.game-parameters-form-wrapper');
@@ -123,6 +125,7 @@ let playerX, playerO;
 
 })();
 
+// GAME BOARD MODULE
 const gameBoard = (function () {
   const board = [];
 
@@ -167,6 +170,7 @@ const gameBoard = (function () {
   }
 })();
 
+// GAME PROCESS MODULE
 const gameProcess = (function () {
   const nextRoundBlock = document.querySelector('.game-next-round-block');
   const nextRoundBlockTitle = document.querySelector('.game-next-round__title');
@@ -337,6 +341,7 @@ const gameProcess = (function () {
 
 })();
 
+// STATISTICS MODULE
 const statistics = (function () {
   const playerXName = document.querySelector('.statistics__player-name[data-player="X"]');
   const playerXScore = document.querySelector('.statistics__player-score[data-player="X"]');
