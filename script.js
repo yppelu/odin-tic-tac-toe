@@ -14,6 +14,7 @@ let playerX, playerO;
   const playerMarkXRadio = document.querySelector('[data-player-mark="X"]');
   const playerMarkORadio = document.querySelector('[data-player-mark="O"]');
   const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
+
   let chosenGameMode;
 
   resetForm();
@@ -45,16 +46,7 @@ let playerX, playerO;
   submitGameParametersButton.addEventListener('click', (e) => {
     e.preventDefault();
 
-    if (playerXNameInput.hasAttribute('readonly')) {
-      playerX = createPlayer(playerXNameInput.value, '1', true);
-      playerO = createPlayer(playerONameInput.value, '2');
-    } else if (playerONameInput.hasAttribute('readonly')) {
-      playerX = createPlayer(playerONameInput.value, '2');
-      playerO = createPlayer(playerONameInput.value, '2', true);
-    } else {
-      playerX = createPlayer(playerXNameInput.value, '1');
-      playerO = createPlayer(playerONameInput.value, '2');
-    }
+    createPlayers()
 
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
@@ -110,6 +102,19 @@ let playerX, playerO;
     }
   }
 
+  function createPlayers() {
+    if (playerXNameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerXNameInput.value, '1', true);
+      playerO = createPlayer(playerONameInput.value, '2');
+    } else if (playerONameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerONameInput.value, '2');
+      playerO = createPlayer(playerONameInput.value, '2', true);
+    } else {
+      playerX = createPlayer(playerXNameInput.value, '1');
+      playerO = createPlayer(playerONameInput.value, '2');
+    }
+  }
+
   function resetForm() {
     gameParametersForm.reset();
     chooseGameMode(gameModeFriendRadio);
@@ -143,12 +148,12 @@ const gameBoard = (function () {
     boardCells[index].append(svg);
   }
 
-  function renderTurn(index, turn) {
+  function renderMove(index, turn) {
     board[index] = (turn % 2 === 0) ? 'X' : 'O';
     renderMark(index);
   }
 
-  function renderWinner(index1, index2, index3) {
+  function showWinner(index1, index2, index3) {
     boardCells[index1].firstChild.style.scale = '1.5';
     boardCells[index2].firstChild.style.scale = '1.5';
     boardCells[index3].firstChild.style.scale = '1.5';
@@ -157,8 +162,8 @@ const gameBoard = (function () {
   return {
     clearBoard,
     getBoard,
-    renderTurn,
-    renderWinner
+    renderMove,
+    showWinner
   }
 })();
 
@@ -238,7 +243,7 @@ const gameProcess = (function () {
     isMoveCoolDown = true;
 
     const indexToPlaceMark = chooseCellForAiMove();
-    gameBoard.renderTurn(indexToPlaceMark, turn);
+    gameBoard.renderMove(indexToPlaceMark, turn);
     watchRoundProgress();
     ++turn;
 
@@ -249,7 +254,7 @@ const gameProcess = (function () {
     if (isMoveCoolDown) return;
 
     const cellIndex = boardCells.indexOf(event.target);
-    if (event.target.innerHTML === '') gameBoard.renderTurn(cellIndex, turn);
+    if (event.target.innerHTML === '') gameBoard.renderMove(cellIndex, turn);
     watchRoundProgress();
     ++turn;
 
@@ -274,7 +279,7 @@ const gameProcess = (function () {
   }
 
   function showWin() {
-    setTimeout(gameBoard.renderWinner, 0, roundWinner[1], roundWinner[2], roundWinner[3]);
+    setTimeout(gameBoard.showWinner, 0, roundWinner[1], roundWinner[2], roundWinner[3]);
     statistics.refreshStatistics();
     nextRoundBlockTitle.textContent = `${roundWinner[0].name} wins!`;
     nextRoundBlock.classList.remove('hidden');
@@ -290,6 +295,12 @@ const gameProcess = (function () {
     }
 
     if (gameMode === 'easy-ai') {
+      boardCells.forEach((cell) => {
+        cell.removeEventListener('click', gamePVP);
+      });
+    }
+
+    if (gameMode === 'hard-ai') {
       boardCells.forEach((cell) => {
         cell.removeEventListener('click', gamePVP);
       });
