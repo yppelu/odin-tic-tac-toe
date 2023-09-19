@@ -16,11 +16,12 @@ let playerX, playerO;
   const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
   let chosenGameMode;
 
+  resetForm();
   startGameButton.addEventListener('click', () => {
+    resetForm();
     gameParametersFormWrapper.classList.remove('hidden');
   });
 
-  gameModeFriendRadio.onload = chooseGameMode(gameModeFriendRadio);
   gameModeFriendRadio.addEventListener('click', () => {
     chooseGameMode(gameModeFriendRadio);
   });
@@ -44,13 +45,19 @@ let playerX, playerO;
   submitGameParametersButton.addEventListener('click', (e) => {
     e.preventDefault();
 
-    playerX = createPlayer(playerXNameInput.value, '1');
-    playerO = createPlayer(playerONameInput.value, '2');
+    if (playerXNameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerXNameInput.value, '1', true);
+      playerO = createPlayer(playerONameInput.value, '2');
+    } else if (playerONameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerONameInput.value, '2');
+      playerO = createPlayer(playerONameInput.value, '2', true);
+    } else {
+      playerX = createPlayer(playerXNameInput.value, '1');
+      playerO = createPlayer(playerONameInput.value, '2');
+    }
 
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
-    playerONameInput.removeAttribute('readonly');
-    resetForm();
   });
 
   function chooseAiPlayer(radioButton) {
@@ -95,10 +102,11 @@ let playerX, playerO;
     }
   }
 
-  function createPlayer(name, playerNumber) {
+  function createPlayer(name, playerNumber, isAi = false) {
     return {
       name: name || `Player ${playerNumber}`,
-      score: 0
+      score: 0,
+      isAi
     }
   }
 
@@ -212,7 +220,7 @@ const gameProcess = (function () {
   }
 
   function gamePVE() {
-    aiTurnRemainder = (playerX.name === 'Easy AI') ? 0 : 1;
+    aiTurnRemainder = (playerX.isAi) ? 0 : 1;
     if (aiTurnRemainder === 0) setTimeout(makeAiMove, 250);
 
     boardCells.forEach((cell) => {
