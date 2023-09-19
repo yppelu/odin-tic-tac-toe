@@ -192,32 +192,21 @@ const gameProcess = (function () {
   }
 
   function checkWinner(board) {
-    for (let i = 0; i < amountOfCells; i++) {
-      if (board[i]) {
-        if (i === 0 || i === 1 || i === 2) {
-          if (board[i] === board[i + 3] && board[i] === board[i + 6]) {
-            saveWinner(board[i], i, i + 3, i + 6);
-            return true;
-          }
-        }
-        if (i === 0 || i === 3 || i === 6) {
-          if (board[i] === board[i + 1] && board[i] === board[i + 2]) {
-            saveWinner(board[i], i, i + 1, i + 2);
-            return true;
-          }
-        }
-        if (i === 0) {
-          if (board[i] === board[i + 4] && board[i] === board[i + 8]) {
-            saveWinner(board[i], i, i + 4, i + 8);
-            return true;
-          }
-        }
-        if (i === 2) {
-          if (board[i] === board[i + 2] && board[i] === board[i + 4]) {
-            saveWinner(board[i], i, i + 2, i + 4);
-            return true;
-          }
-        }
+    const winningCombinations = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+    for (let i = 0; i < winningCombinations.length; i++) {
+      const [i1, i2, i3] = winningCombinations[i];
+      if (board[i1] && board[i1] === board[i2] && board[i1] === board[i3]) {
+        saveWinner(board[i1], i1, i2, i3);
+        return true;
       }
     }
     return false;
