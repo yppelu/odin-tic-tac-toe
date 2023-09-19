@@ -1,4 +1,4 @@
-const boardCells = document.querySelectorAll('.game-board__cell');
+const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
 
 (function () {
@@ -56,16 +56,16 @@ let playerX, playerO;
   function chooseAiPlayer(radioButton) {
     clearChosenForAiInputs();
     if (playerMarkXRadio.checked) {
-      playerXNameInput.setAttribute('readonly', '');
-      radioButton === gameModeEasyAiRadio
-        ? playerXNameInput.value = 'Easy AI'
-        : playerXNameInput.value = 'Hard AI';
-    }
-    if (playerMarkORadio.checked) {
       playerONameInput.setAttribute('readonly', '');
       radioButton === gameModeEasyAiRadio
         ? playerONameInput.value = 'Easy AI'
         : playerONameInput.value = 'Hard AI';
+    }
+    if (playerMarkORadio.checked) {
+      playerXNameInput.setAttribute('readonly', '');
+      radioButton === gameModeEasyAiRadio
+        ? playerXNameInput.value = 'Easy AI'
+        : playerXNameInput.value = 'Hard AI';
     }
   }
 
@@ -161,6 +161,9 @@ const gameProcess = (function () {
 
   let turn = 0;
   const roundWinner = [];
+  let gameMode;
+  let aiTurnRemainder;
+  let isMoveCoolDown = false;
 
   nextRoundButton.addEventListener('click', startNewRound);
 
@@ -197,13 +200,59 @@ const gameProcess = (function () {
     return false;
   }
 
-  function gamePVP() {
-    if (checkWinner()) {
-      roundWinner[0].score++;
-      showWin();
-    } else if (turn === 8) {
-      showTie();
+  function chooseCellForAiMove() {
+    if (gameMode === 'easy-ai' || gameMode === 'hard-ai') {
+      const board = gameBoard.getBoard();
+      let cellIndex;
+      do {
+        cellIndex = Math.floor(Math.random() * 9);
+      } while (board[cellIndex]);
+      return cellIndex;
     }
+  }
+
+  function gamePVE() {
+    aiTurnRemainder = (playerX.name === 'Easy AI') ? 0 : 1;
+    if (aiTurnRemainder === 0) setTimeout(makeAiMove, 250);
+
+    boardCells.forEach((cell) => {
+      cell.addEventListener('click', playAiRoundTurn);
+    });
+  }
+
+  function gamePVP() {
+    boardCells.forEach((cell) => {
+      cell.addEventListener('click', makePlayerMove);
+    });
+  }
+
+  function makeAiMove() {
+    isMoveCoolDown = true;
+
+    const indexToPlaceMark = chooseCellForAiMove();
+    gameBoard.renderTurn(indexToPlaceMark, turn);
+    watchRoundProgress();
+    ++turn;
+
+    setTimeout(() => isMoveCoolDown = false, 500);
+  }
+
+  function makePlayerMove(event) {
+    if (isMoveCoolDown) return;
+
+    const cellIndex = boardCells.indexOf(event.target);
+    if (event.target.innerHTML === '') gameBoard.renderTurn(cellIndex, turn);
+    watchRoundProgress();
+    ++turn;
+
+    isMoveCoolDown = true;
+    setTimeout(() => isMoveCoolDown = false, 500);
+  }
+
+  function playAiRoundTurn(event) {
+    makePlayerMove(event);
+    if (nextRoundBlock.classList.contains('hidden') && turn % 2 === aiTurnRemainder)
+      setTimeout(makeAiMove, 500);
   }
 
   function saveWinner(winnerMark, index1, index2, index3) {
@@ -223,21 +272,23 @@ const gameProcess = (function () {
     nextRoundBlock.classList.remove('hidden');
   }
 
-  function startGame(gameMode) {
-    startNewRound();
-    statistics.refreshStatistics();
+  function startGame(newGameMode) {
+    gameMode = newGameMode;
 
-    boardCells.forEach((cell, index) => {
-      cell.addEventListener('click', () => {
-        if (cell.innerHTML === '') {
-          gameBoard.renderTurn(index, turn);
-          if (gameMode === 'friend') gamePVP();
-          if (gameMode === 'easy-ai') gamePVP();
-          if (gameMode === 'hard-ai') gamePVP();
-          ++turn;
-        }
+    if (gameMode === 'friend') {
+      boardCells.forEach((cell) => {
+        cell.removeEventListener('click', playAiRoundTurn);
       });
-    });
+    }
+
+    if (gameMode === 'easy-ai') {
+      boardCells.forEach((cell) => {
+        cell.removeEventListener('click', gamePVP);
+      });
+    }
+
+    statistics.refreshStatistics();
+    startNewRound();
   }
 
   function startNewRound() {
@@ -245,6 +296,19 @@ const gameProcess = (function () {
     turn = 0;
     if (!nextRoundBlock.classList.contains('hidden')) {
       nextRoundBlock.classList.add('hidden');
+    }
+
+    if (gameMode === 'friend') gamePVP();
+    if (gameMode === 'easy-ai') gamePVE();
+    if (gameMode === 'hard-ai') gamePVE();
+  }
+
+  function watchRoundProgress() {
+    if (checkWinner()) {
+      roundWinner[0].score++;
+      showWin();
+    } else if (turn === 8) {
+      showTie();
     }
   }
 
