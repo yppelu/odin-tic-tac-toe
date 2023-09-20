@@ -131,6 +131,24 @@ let playerX, playerO;
   });
 })();
 
+const statistics = (function () {
+  const playerXName = document.querySelector('.statistics__player-name[data-player="X"]');
+  const playerXWins = document.querySelector('.statistics__player-wins[data-player="X"]');
+  const playerOName = document.querySelector('.statistics__player-name[data-player="O"]');
+  const playerOWins = document.querySelector('.statistics__player-wins[data-player="O"]');
+
+  function refreshStatistics() {
+    playerXName.textContent = playerX.name;
+    playerXWins.textContent = playerX.wins;
+    playerOName.textContent = playerO.name;
+    playerOWins.textContent = playerO.wins;
+  }
+
+  return {
+    refreshStatistics
+  }
+})();
+
 /* // GLOBAL VARIABLES
 const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
