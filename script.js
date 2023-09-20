@@ -1,4 +1,137 @@
 // GLOBAL VARIABLES
+let playerX, playerO;
+
+// FORM MODULE
+(function () {
+  const startGameButton = document.querySelector('.header__start-game-button');
+  const gameParametersFormWrapper = document.querySelector('.game-parameters-form-wrapper');
+  const gameParametersForm = document.querySelector('.game-parameters-form');
+  const gameModeFriendRadio = document.querySelector('[data-game-mode="friend"]');
+  const gameModeEasyAiRadio = document.querySelector('[data-game-mode="easy-ai"]');
+  const gameModeHardAiRadio = document.querySelector('[data-game-mode="hard-ai"]');
+  const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
+  const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
+  const playerMarkChoiceForm = document.querySelector('.game-parameters-form__player-mark-fieldset');
+  const playerMarkXRadio = document.querySelector('[data-player-mark="X"]');
+  const playerMarkORadio = document.querySelector('[data-player-mark="O"]');
+  const submitGameParametersButton = document.querySelector('.game-parameters-form__submit-form');
+
+  let chosenGameMode;
+
+  function applyDefaultToNameInputs() {
+    if (playerXNameInput.value === '') playerXNameInput.value = 'Player X';
+    if (playerONameInput.value === '') playerONameInput.value = 'Player O';
+  }
+
+  function chooseAiGameMode(gameModeRadio) {
+    if (gameModeRadio === gameModeEasyAiRadio) chosenGameMode = 'easy-ai';
+    if (gameModeRadio === gameModeHardAiRadio) chosenGameMode = 'hard-ai';
+    selectAi();
+    if (playerMarkChoiceForm.classList.contains('hidden')) {
+      playerMarkChoiceForm.classList.remove('hidden');
+    }
+  }
+
+  function chooseFriendGameMode() {
+    chosenGameMode = 'friend';
+    clearAiSelection();
+    if (!playerMarkChoiceForm.classList.contains('hidden')) {
+      playerMarkChoiceForm.classList.add('hidden');
+    }
+  }
+
+  function chooseGameMode(gameModeRadio) {
+    gameModeRadio.checked = true;
+    if (gameModeRadio === gameModeFriendRadio) chooseFriendGameMode();
+    else chooseAiGameMode(gameModeRadio);
+  }
+
+  function clearAiSelection() {
+    if (playerXNameInput.hasAttribute('readonly')) {
+      playerXNameInput.removeAttribute('readonly');
+      playerXNameInput.value = '';
+    }
+    if (playerONameInput.hasAttribute('readonly')) {
+      playerONameInput.removeAttribute('readonly');
+      playerONameInput.value = '';
+    }
+  }
+
+  function createPlayer(playerNameInput, isAi = false) {
+    if (!playerNameInput.value) applyDefaultToNameInputs();
+    return {
+      name: playerNameInput.value,
+      wins: 0,
+      isAi
+    };
+  }
+
+  function createPlayers() {
+    if (playerXNameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerXNameInput, true);
+      playerO = createPlayer(playerONameInput);
+    } else if (playerONameInput.hasAttribute('readonly')) {
+      playerX = createPlayer(playerXNameInput);
+      playerO = createPlayer(playerONameInput, true);
+    } else {
+      playerX = createPlayer(playerXNameInput);
+      playerO = createPlayer(playerONameInput);
+    }
+  }
+
+  function resetGameParametersForm() {
+    gameParametersForm.reset();
+    chooseGameMode(gameModeFriendRadio);
+  }
+
+  function selectAi() {
+    clearAiSelection();
+    if (playerMarkXRadio.checked) setInputToAi(playerONameInput);
+    if (playerMarkORadio.checked) setInputToAi(playerXNameInput);
+  }
+
+  function setInputToAi(playerInputToSet) {
+    playerInputToSet.setAttribute('readonly', '');
+    if (chosenGameMode === 'easy-ai') playerInputToSet.value = 'Easy AI';
+    if (chosenGameMode === 'hard-ai') playerInputToSet.value = 'Hard AI';
+  }
+
+  resetGameParametersForm();
+
+  startGameButton.addEventListener('click', () => {
+    resetGameParametersForm();
+    gameParametersFormWrapper.classList.remove('hidden');
+  });
+
+  gameModeFriendRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeFriendRadio);
+  });
+  gameModeEasyAiRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeEasyAiRadio);
+  });
+  gameModeHardAiRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeHardAiRadio);
+  });
+
+  playerMarkXRadio.addEventListener('click', () => {
+    if (gameModeEasyAiRadio.checked) chooseGameMode(gameModeEasyAiRadio);
+    if (gameModeHardAiRadio.checked) chooseGameMode(gameModeHardAiRadio);
+  });
+  playerMarkORadio.addEventListener('click', () => {
+    if (gameModeEasyAiRadio.checked) chooseGameMode(gameModeEasyAiRadio);
+    if (gameModeHardAiRadio.checked) chooseGameMode(gameModeHardAiRadio);
+  });
+
+  submitGameParametersButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    createPlayers();
+    statistics.refreshStatistics();
+    gameProcess.startGame(chosenGameMode);
+    gameParametersFormWrapper.classList.add('hidden');
+  });
+})();
+
+/* // GLOBAL VARIABLES
 const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
 const amountOfCells = boardCells.length;
@@ -48,9 +181,7 @@ const amountOfCells = boardCells.length;
 
   submitGameParametersButton.addEventListener('click', (e) => {
     e.preventDefault();
-
     createPlayers();
-
     gameProcess.startGame(chosenGameMode);
     gameParametersFormWrapper.classList.add('hidden');
   });
@@ -400,4 +531,4 @@ const statistics = (function () {
   return {
     refreshStatistics
   }
-})();
+})(); */
