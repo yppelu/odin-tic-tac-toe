@@ -1,4 +1,6 @@
 // GLOBAL VARIABLES
+const AMOUNT_OF_CELLS = 9;
+const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
 
 // FORM MODULE
@@ -7,8 +9,8 @@ let playerX, playerO;
   const gameParametersFormWrapper = document.querySelector('.game-parameters-form-wrapper');
   const gameParametersForm = document.querySelector('.game-parameters-form');
   const gameModeFriendRadio = document.querySelector('[data-game-mode="friend"]');
-  const gameModeEasyAiRadio = document.querySelector('[data-game-mode="easy-ai"]');
-  const gameModeHardAiRadio = document.querySelector('[data-game-mode="hard-ai"]');
+  const gameModeEasyAIRadio = document.querySelector('[data-game-mode="easy-ai"]');
+  const gameModeHardAIRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
   const playerMarkChoiceForm = document.querySelector('.game-parameters-form__player-mark-fieldset');
@@ -23,10 +25,20 @@ let playerX, playerO;
     if (playerONameInput.value === '') playerONameInput.value = 'Player O';
   }
 
-  function chooseAiGameMode(gameModeRadio) {
-    if (gameModeRadio === gameModeEasyAiRadio) chosenGameMode = 'easy-ai';
-    if (gameModeRadio === gameModeHardAiRadio) chosenGameMode = 'hard-ai';
-    selectAi();
+  function assignIsMoveToPlayer(playerNameInput) {
+    if (playerNameInput === playerXNameInput) return true;
+    if (playerNameInput === playerONameInput) return false;
+  }
+
+  function assignMarkToPlayer(playerNameInput) {
+    if (playerNameInput === playerXNameInput) return 'X';
+    if (playerNameInput === playerONameInput) return 'O';
+  }
+
+  function chooseAIGameMode(gameModeRadio) {
+    if (gameModeRadio === I) chosenGameMode = 'easy-ai';
+    if (gameModeRadio === gameModeHardAIRadio) chosenGameMode = 'hard-ai';
+    selectAI();
     if (playerMarkChoiceForm.classList.contains('hidden')) {
       playerMarkChoiceForm.classList.remove('hidden');
     }
@@ -34,7 +46,7 @@ let playerX, playerO;
 
   function chooseFriendGameMode() {
     chosenGameMode = 'friend';
-    clearAiSelection();
+    clearAISelection();
     if (!playerMarkChoiceForm.classList.contains('hidden')) {
       playerMarkChoiceForm.classList.add('hidden');
     }
@@ -43,10 +55,10 @@ let playerX, playerO;
   function chooseGameMode(gameModeRadio) {
     gameModeRadio.checked = true;
     if (gameModeRadio === gameModeFriendRadio) chooseFriendGameMode();
-    else chooseAiGameMode(gameModeRadio);
+    else chooseAIGameMode(gameModeRadio);
   }
 
-  function clearAiSelection() {
+  function clearAISelection() {
     if (playerXNameInput.hasAttribute('readonly')) {
       playerXNameInput.removeAttribute('readonly');
       playerXNameInput.value = '';
@@ -57,12 +69,14 @@ let playerX, playerO;
     }
   }
 
-  function createPlayer(playerNameInput, isAi = false) {
+  function createPlayer(playerNameInput, isAI = false) {
     if (!playerNameInput.value) applyDefaultToNameInputs();
     return {
       name: playerNameInput.value,
-      wins: 0,
-      isAi
+      isAI,
+      mark: assignMarkToPlayer(playerNameInput),
+      isMove: assignIsMoveToPlayer(playerNameInput),
+      wins: 0
     };
   }
 
@@ -84,13 +98,13 @@ let playerX, playerO;
     chooseGameMode(gameModeFriendRadio);
   }
 
-  function selectAi() {
-    clearAiSelection();
-    if (playerMarkXRadio.checked) setInputToAi(playerONameInput);
-    if (playerMarkORadio.checked) setInputToAi(playerXNameInput);
+  function selectAI() {
+    clearAISelection();
+    if (playerMarkXRadio.checked) setInputToAI(playerONameInput);
+    if (playerMarkORadio.checked) setInputToAI(playerXNameInput);
   }
 
-  function setInputToAi(playerInputToSet) {
+  function setInputToAI(playerInputToSet) {
     playerInputToSet.setAttribute('readonly', '');
     if (chosenGameMode === 'easy-ai') playerInputToSet.value = 'Easy AI';
     if (chosenGameMode === 'hard-ai') playerInputToSet.value = 'Hard AI';
@@ -106,20 +120,20 @@ let playerX, playerO;
   gameModeFriendRadio.addEventListener('click', () => {
     chooseGameMode(gameModeFriendRadio);
   });
-  gameModeEasyAiRadio.addEventListener('click', () => {
-    chooseGameMode(gameModeEasyAiRadio);
+  gameModeEasyAIRadio.addEventListener('click', () => {
+    chooseGameMode(I);
   });
-  gameModeHardAiRadio.addEventListener('click', () => {
-    chooseGameMode(gameModeHardAiRadio);
+  gameModeHardAIRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeHardAIRadio);
   });
 
   playerMarkXRadio.addEventListener('click', () => {
-    if (gameModeEasyAiRadio.checked) chooseGameMode(gameModeEasyAiRadio);
-    if (gameModeHardAiRadio.checked) chooseGameMode(gameModeHardAiRadio);
+    if (gameModeEasyAIRadio.checked) chooseGameMode(I);
+    if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkORadio.addEventListener('click', () => {
-    if (gameModeEasyAiRadio.checked) chooseGameMode(gameModeEasyAiRadio);
-    if (gameModeHardAiRadio.checked) chooseGameMode(gameModeHardAiRadio);
+    if (gameModeEasyAIRadio.checked) chooseGameMode(I);
+    if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
 
   submitGameParametersButton.addEventListener('click', (e) => {
@@ -131,6 +145,155 @@ let playerX, playerO;
   });
 })();
 
+// GAME BOARD MODULE
+const gameBoard = (function () {
+  const board = [];
+  for (let i = 0; i < AMOUNT_OF_CELLS; i++) board[i] = '';
+
+  function addMove(index) {
+    if (playerX.isMove) board[index] = 'X';
+    if (playerO.isMove) board[index] = 'O';
+    renderMove(index);
+  }
+
+  function checkIfMovePossible(index) {
+    return board[index] ? false : true;
+  }
+
+  function clearBoard() {
+    for (let i = 0; i < AMOUNT_OF_CELLS; i++) board[i] = '';
+    boardCells.forEach(cell => cell.innerHTML = '');
+  }
+
+  function createMarkSvg(markType) {
+    const placeholder = document.createElement('template');
+    placeholder.innerHTML = (markType === 'X')
+      ? '<svg class="game-board__playerMark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="none"><path class="x-line1" stroke="var(--text-clr)" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="-50" stroke-linecap="round" stroke-linejoin="round" d="M7 42.3553L42.3553 7" /><path class="x-line2" stroke="var(--text-clr)" stroke-width="3" stroke-dasharray="50" stroke-dashoffset="50" stroke-linecap="round" stroke-linejoin="round" d="M7 7L42.3553 42.3553" /></svg>'
+      : '<svg class="game-board__playerMark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="none"><path class="o-circle" stroke="var(--text-clr)" stroke-width="3" stroke-dasharray="150" stroke-dashoffset="150" d="M9.24891 5.0519L9.24896 5.05196L9.25588 5.04655C11.4238 3.35179 13.9795 2.5 16.9461 2.5C22.6946 2.5 27.7846 3.65422 32.2284 5.94951L32.2283 5.94956L32.2354 5.95308C36.7291 8.18483 40.2104 11.4027 42.6913 15.6118L42.6937 15.6158C45.2266 19.8235 46.5 24.6901 46.5 30.2316C46.5 33.8414 45.3565 36.8422 43.0806 39.2684L43.0805 39.2684L43.0767 39.2726C40.8188 41.7355 38.0348 43.5545 34.7148 44.7286L34.7124 44.7295C31.419 45.913 28.2717 46.5 25.2675 46.5C20.8817 46.5 16.9603 45.4479 13.4899 43.3519C10.0737 41.2562 7.38861 38.2965 5.43484 34.4574C3.48322 30.6226 2.5 26.1868 2.5 21.1368C2.5 17.721 3.08238 14.5964 4.24035 11.7572C5.39499 8.92622 7.06634 6.6972 9.24891 5.0519Z" /></svg>';
+    return placeholder.content.firstElementChild;
+  }
+
+  function renderMove(index) {
+    const svg = createMarkSvg(board[index]);
+    boardCells[index].append(svg);
+  }
+
+  return {
+    board,
+    addMove,
+    checkIfMovePossible,
+    clearBoard
+  };
+})();
+
+// GAME PROCESS MODULE
+const gameProcess = (function () {
+  const nextRoundBlock = document.querySelector('.game-next-round-block');
+  const nextRoundBlockTitle = document.querySelector('.game-next-round__title');
+  const nextRoundButton = document.querySelector('.game-next-round-block__button');
+
+  let gameMode;
+  let isGameOver = false;
+
+  function checkIfTie() {
+    for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
+      if (!gameBoard.board[i]) return false;
+    }
+    return true;
+  }
+
+  function checkIfWin() {
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
+      [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+    ];
+    for (let i = 0; i < winningCombinations.length; i++) {
+      const [i1, i2, i3] = winningCombinations[i];
+      if (
+        gameBoard.board[i1]
+        && gameBoard.board[i1] === gameBoard.board[i2]
+        && gameBoard.board[i1] === gameBoard.board[i3]
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  function gamePVP() {
+
+  }
+
+  function getGameState() {
+    if (checkIfWin()) return (playerX.isMove) ? playerX : playerO;
+    else if (checkIfTie()) return 'tie';
+    else return 'continue';
+  }
+
+  function makePlayerMove(index) {
+    if (!isGameOver) {
+      if (gameBoard.checkIfMovePossible(index)) {
+        gameBoard.addMove(index);
+        watchGameProcess();
+      }
+    }
+  }
+
+  function showTie() {
+    nextRoundBlockTitle.textContent = 'It is a tie!';
+    nextRoundBlock.classList.remove('hidden');
+  }
+
+  function showWin(winner) {
+    nextRoundBlockTitle.textContent = `${winner.name} has won!`;
+    winner.wins++;
+    statistics.refreshStatistics();
+    nextRoundBlock.classList.remove('hidden');
+  }
+
+  function startGame(chosenGameMode) {
+    gameMode = chosenGameMode;
+    startNewRound();
+  }
+
+  function startNewRound() {
+    isGameOver = false;
+    [playerX.isMove, playerO.isMove] = [true, false];
+    gameBoard.clearBoard();
+    if (!nextRoundBlock.classList.contains('hidden')) {
+      nextRoundBlock.classList.add('hidden');
+    }
+
+    if (gameMode === 'friend') gamePVP();
+    if (gameMode === 'easy-ai') gamePVE();
+    if (gameMode === 'hard-ai') gamePVE();
+  }
+
+  function toggleWhichTurn() {
+    [playerX.isMove, playerO.isMove] = [playerO.isMove, playerX.isMove];
+  }
+
+  function watchGameProcess() {
+    let gameState = getGameState();
+    if (gameState === 'continue') {
+      toggleWhichTurn();
+    } else {
+      isGameOver = true;
+      if (gameState === 'tie') showTie();
+      else showWin(gameState);
+    }
+  }
+
+  boardCells.forEach((cell, index) => {
+    cell.addEventListener('click', makePlayerMove.bind(null, index));
+  });
+  nextRoundButton.addEventListener('click', startNewRound);
+
+  return { startGame };
+})();
+
+// STATISTICS MODULE
 const statistics = (function () {
   const playerXName = document.querySelector('.statistics__player-name[data-player="X"]');
   const playerXWins = document.querySelector('.statistics__player-wins[data-player="X"]');
@@ -144,15 +307,13 @@ const statistics = (function () {
     playerOWins.textContent = playerO.wins;
   }
 
-  return {
-    refreshStatistics
-  }
+  return { refreshStatistics };
 })();
 
 /* // GLOBAL VARIABLES
 const boardCells = Array.from(document.querySelectorAll('.game-board__cell'));
 let playerX, playerO;
-const amountOfCells = boardCells.length;
+const AMOUNT_OF_CELLS = boardCells.length;
 
 // FORM MODULE
 (function () {
@@ -160,8 +321,8 @@ const amountOfCells = boardCells.length;
   const gameParametersFormWrapper = document.querySelector('.game-parameters-form-wrapper');
   const gameParametersForm = document.querySelector('.game-parameters-form');
   const gameModeFriendRadio = document.querySelector('[data-game-mode="friend"]');
-  const gameModeEasyAiRadio = document.querySelector('[data-game-mode="easy-ai"]');
-  const gameModeHardAiRadio = document.querySelector('[data-game-mode="hard-ai"]');
+  const I = document.querySelector('[data-game-mode="easy-ai"]');
+  const gameModeHardAIRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
   const playerMarkChoiceForm = document.querySelector('.game-parameters-form__player-mark-fieldset');
@@ -180,21 +341,21 @@ const amountOfCells = boardCells.length;
   gameModeFriendRadio.addEventListener('click', () => {
     chooseGameMode(gameModeFriendRadio);
   });
-  gameModeEasyAiRadio.addEventListener('click', () => {
-    chooseGameMode(gameModeEasyAiRadio);
+  gameModeEasyAIRadio.addEventListener('click', () => {
+    chooseGameMode(I);
   });
-  gameModeHardAiRadio.addEventListener('click', () => {
-    chooseGameMode(gameModeHardAiRadio);
+  gameModeHardAIRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkXRadio.addEventListener('click', () => {
-    gameModeEasyAiRadio.checked
-      ? chooseGameMode(gameModeEasyAiRadio)
-      : chooseGameMode(gameModeHardAiRadio);
+    gameModeEasyAIRadio.checked
+      ? chooseGameMode(I)
+      : chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkORadio.addEventListener('click', () => {
-    gameModeEasyAiRadio.checked
-      ? chooseGameMode(gameModeEasyAiRadio)
-      : chooseGameMode(gameModeHardAiRadio);
+    gameModeEasyAIRadio.checked
+      ? chooseGameMode(I)
+      : chooseGameMode(gameModeHardAIRadio);
   });
 
   submitGameParametersButton.addEventListener('click', (e) => {
@@ -208,13 +369,13 @@ const amountOfCells = boardCells.length;
     clearChosenForAiInputs();
     if (playerMarkXRadio.checked) {
       playerONameInput.setAttribute('readonly', '');
-      radioButton === gameModeEasyAiRadio
+      radioButton === I
         ? playerONameInput.value = 'Easy AI'
         : playerONameInput.value = 'Hard AI';
     }
     if (playerMarkORadio.checked) {
       playerXNameInput.setAttribute('readonly', '');
-      radioButton === gameModeEasyAiRadio
+      radioButton === I
         ? playerXNameInput.value = 'Easy AI'
         : playerXNameInput.value = 'Hard AI';
     }
@@ -229,7 +390,7 @@ const amountOfCells = boardCells.length;
     } else {
       chooseAiPlayer(radioButton);
       playerMarkChoiceForm.classList.remove('hidden');
-      radioButton === gameModeEasyAiRadio
+      radioButton === I
         ? chosenGameMode = 'easy-ai'
         : chosenGameMode = 'hard-ai';
     }
@@ -246,11 +407,11 @@ const amountOfCells = boardCells.length;
     }
   }
 
-  function createPlayer(name, playerNumber, isAi = false) {
+  function createPlayer(name, playerNumber, isAI = false) {
     return {
       name: name || `Player ${playerNumber}`,
       score: 0,
-      isAi
+      isAI
     }
   }
 
@@ -334,7 +495,7 @@ const gameProcess = (function () {
   nextRoundButton.addEventListener('click', startNewRound);
 
   function checkTie(board) {
-    for (let i = 0; i < amountOfCells; i++) {
+    for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!board[i]) return false;
     }
     return true;
@@ -370,7 +531,7 @@ const gameProcess = (function () {
   function chooseCellForEasyAi(board) {
     let index;
     do {
-      index = Math.floor(Math.random() * amountOfCells);
+      index = Math.floor(Math.random() * AMOUNT_OF_CELLS);
     } while (board[index]);
     return index;
   }
@@ -378,10 +539,10 @@ const gameProcess = (function () {
   function chooseCellForHardAi(board) {
     function minimax(board, newTurn, isMaximizing) {
       if (checkTie(board)) return 0;
-      if (checkWinner(board)) return roundWinner[0].isAi ? 1 : -1;
+      if (checkWinner(board)) return roundWinner[0].isAI ? 1 : -1;
       if (isMaximizing) {
         let bestScore = -Infinity;
-        for (let i = 0; i < amountOfCells; i++) {
+        for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
           if (!board[i]) {
             board[i] = (newTurn % 2 === 0) ? 'X' : 'O';
             let score = minimax(board, newTurn + 1, false);
@@ -392,7 +553,7 @@ const gameProcess = (function () {
         return bestScore;
       } else {
         let bestScore = Infinity;
-        for (let i = 0; i < amountOfCells; i++) {
+        for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
           if (!board[i]) {
             board[i] = (newTurn % 2 === 0) ? 'X' : 'O';
             let score = minimax(board, newTurn + 1, true);
@@ -406,7 +567,7 @@ const gameProcess = (function () {
 
     let bestScore = -Infinity;
     let bestCell;
-    for (let i = 0; i < amountOfCells; i++) {
+    for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!board[i]) {
         board[i] = (turn % 2 === 0) ? 'X' : 'O';
         let score = minimax(board, turn + 1, false);
@@ -430,7 +591,7 @@ const gameProcess = (function () {
   }
 
   function gamePVE() {
-    if (playerX.isAi) setTimeout(makeAiMove, 250);
+    if (playerX.isAI) setTimeout(makeAiMove, 250);
     boardCells.forEach((cell) => {
       cell.addEventListener('click', playAiRoundTurn);
     });
