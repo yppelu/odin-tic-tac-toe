@@ -150,10 +150,6 @@ const gameBoard = (function () {
     renderMove(index);
   }
 
-  function checkIfMovePossible(index) {
-    return board[index] ? false : true;
-  }
-
   function clearBoard() {
     for (let i = 0; i < AMOUNT_OF_CELLS; i++) board[i] = '';
     boardCells.forEach(cell => cell.innerHTML = '');
@@ -175,7 +171,6 @@ const gameBoard = (function () {
   return {
     board,
     addMove,
-    checkIfMovePossible,
     clearBoard
   };
 })();
@@ -193,6 +188,10 @@ const gameProcess = (function () {
     if (playerX.isAI && playerX.isMove) return true;
     if (playerO.isAI && playerO.isMove) return true;
     return false;
+  }
+
+  function checkIfMovePossible(index) {
+    return gameBoard.board[index] ? false : true;
   }
 
   function checkIfPlayerCanMove() {
@@ -231,7 +230,7 @@ const gameProcess = (function () {
     let index;
     do {
       index = Math.floor(Math.random() * AMOUNT_OF_CELLS);
-    } while (!gameBoard.checkIfMovePossible(index));
+    } while (!checkIfMovePossible(index));
     return index;
   }
 
@@ -243,7 +242,7 @@ const gameProcess = (function () {
     for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!board[i]) {
         board[i] = (playerX.isAI) ? 'X' : 'O';
-        let score = minimax(board, true);
+        let score = minimax([...board], false);
         board[i] = '';
         if (score > bestScore) {
           bestScore = score;
@@ -271,7 +270,16 @@ const gameProcess = (function () {
     boardCells.forEach(cell => {
       cell.addEventListener('click', makeAIMove);
     });
-    if (playerX.isAI) makeAIMove();
+    if (playerX.isAI) {
+      // This condition is to make first AI move random
+      if (gameMode === 'hard-ai') {
+        gameMode = 'easy-ai';
+        makeAIMove();
+        setTimeout(() => gameMode = 'hard-ai', 500);
+      } else {
+        makeAIMove();
+      }
+    }
   }
 
   function getGameState() {
@@ -295,32 +303,32 @@ const gameProcess = (function () {
 
   function makePlayerMove(index) {
     if (!isGameOver) {
-      if (checkIfPlayerCanMove() && gameBoard.checkIfMovePossible(index)) {
+      if (checkIfPlayerCanMove() && checkIfMovePossible(index)) {
         gameBoard.addMove(index);
         watchGameProcess();
       }
     }
   }
 
-  function minimax(board, isEnemyTurn) {
+  function minimax(board, isAIMove) {
+    // The checks are executed for the previous move, that's why !isAIMove
     if (checkIfTie(board)) return 0;
-    if (checkIfWin(board)) return isEnemyTurn ? -1 : 1;
+    if (checkIfWin(board)) return (!isAIMove) ? 1 : -1;
 
     let bestScore;
-    bestScore = isEnemyTurn ? Infinity : -Infinity;
+    bestScore = isAIMove ? -Infinity : Infinity;
 
     let mark;
-    if (isEnemyTurn) mark = playerX.isAI ? 'O' : 'X';
-    else mark = playerX.isAI ? 'X' : 'O';
+    if (isAIMove) mark = playerX.isAI ? 'X' : 'O';
+    else mark = playerX.isAI ? 'O' : 'X';
 
     for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!board[i]) {
         board[i] = mark;
-        let score = minimax([...board], !isEnemyTurn);
+        bestScore = isAIMove
+          ? Math.max(minimax([...board], !isAIMove), bestScore)
+          : Math.min(minimax([...board], !isAIMove), bestScore);
         board[i] = '';
-        bestScore = (isEnemyTurn)
-          ? Math.min(bestScore, score)
-          : Math.max(bestScore, score);
       }
     }
 
