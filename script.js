@@ -283,7 +283,7 @@ const gameProcess = (function () {
   }
 
   function getGameState() {
-    if (checkIfWin(gameBoard.board)) return (playerX.isMove) ? playerX : playerO;
+    if (checkIfWin(gameBoard.board)) return playerX.isMove ? playerX : playerO;
     else if (checkIfTie(gameBoard.board)) return 'tie';
     else return 'continue';
   }

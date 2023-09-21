@@ -1,4 +1,4 @@
-/* FONTS */
+/* Fonts */
 
 @font-face {
   font-family: "Roboto";
@@ -36,7 +36,7 @@
   font-weight: 700;
 }
 
-/* RESET */
+/* Reset */
 
 *,
 *::before,
@@ -164,8 +164,6 @@ body {
 .header__title {
   color: var(--title-text-clr);
 }
-
-/* Main styles */
 
 /* Statistics styles */
 
@@ -370,7 +368,7 @@ body {
   background-color: var(--readonly-input-bg-clr);
 }
 
-/* At the very and to have a higher priority */
+/* At the very end to have a higher priority */
 .hidden {
   display: none;
 }
