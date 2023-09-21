@@ -242,7 +242,7 @@ const gameProcess = (function () {
     for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!board[i]) {
         board[i] = (playerX.isAI) ? 'X' : 'O';
-        let score = minimax([...board], false);
+        let score = minimax([...board], false, 0);
         board[i] = '';
         if (score > bestScore) {
           bestScore = score;
@@ -310,10 +310,10 @@ const gameProcess = (function () {
     }
   }
 
-  function minimax(board, isAIMove) {
+  function minimax(board, isAIMove, depth) {
     // The checks are executed for the previous move, that's why !isAIMove
+    if (checkIfWin(board)) return (!isAIMove) ? 10 - depth : -10 + depth;
     if (checkIfTie(board)) return 0;
-    if (checkIfWin(board)) return (!isAIMove) ? 1 : -1;
 
     let bestScore;
     bestScore = isAIMove ? -Infinity : Infinity;
@@ -326,8 +326,8 @@ const gameProcess = (function () {
       if (!board[i]) {
         board[i] = mark;
         bestScore = isAIMove
-          ? Math.max(minimax([...board], !isAIMove), bestScore)
-          : Math.min(minimax([...board], !isAIMove), bestScore);
+          ? Math.max(minimax([...board], !isAIMove, depth + 1), bestScore)
+          : Math.min(minimax([...board], !isAIMove, depth + 1), bestScore);
         board[i] = '';
       }
     }
