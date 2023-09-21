@@ -10,6 +10,7 @@ let playerX, playerO;
   const gameParametersForm = document.querySelector('.game-parameters-form');
   const gameModeFriendRadio = document.querySelector('[data-game-mode="friend"]');
   const gameModeEasyAIRadio = document.querySelector('[data-game-mode="easy-ai"]');
+  const gameModeNormalAIRadio = document.querySelector('[data-game-mode="normal-ai"]');
   const gameModeHardAIRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
@@ -32,6 +33,7 @@ let playerX, playerO;
 
   function chooseAIGameMode(gameModeRadio) {
     if (gameModeRadio === gameModeEasyAIRadio) chosenGameMode = 'easy-ai';
+    if (gameModeRadio === gameModeNormalAIRadio) chosenGameMode = 'normal-ai';
     if (gameModeRadio === gameModeHardAIRadio) chosenGameMode = 'hard-ai';
     selectAI();
     if (playerMarkChoiceForm.classList.contains('hidden')) {
@@ -101,6 +103,7 @@ let playerX, playerO;
   function setInputToAI(playerInputToSet) {
     playerInputToSet.setAttribute('readonly', '');
     if (chosenGameMode === 'easy-ai') playerInputToSet.value = 'Easy AI';
+    if (chosenGameMode === 'normal-ai') playerInputToSet.value = 'Normal AI';
     if (chosenGameMode === 'hard-ai') playerInputToSet.value = 'Hard AI';
   }
 
@@ -117,16 +120,21 @@ let playerX, playerO;
   gameModeEasyAIRadio.addEventListener('click', () => {
     chooseGameMode(gameModeEasyAIRadio);
   });
+  gameModeNormalAIRadio.addEventListener('click', () => {
+    chooseGameMode(gameModeNormalAIRadio);
+  });
   gameModeHardAIRadio.addEventListener('click', () => {
     chooseGameMode(gameModeHardAIRadio);
   });
 
   playerMarkXRadio.addEventListener('click', () => {
     if (gameModeEasyAIRadio.checked) chooseGameMode(gameModeEasyAIRadio);
+    if (gameModeNormalAIRadio.checked) chooseGameMode(gameModeNormalAIRadio);
     if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkORadio.addEventListener('click', () => {
     if (gameModeEasyAIRadio.checked) chooseGameMode(gameModeEasyAIRadio);
+    if (gameModeNormalAIRadio.checked) chooseGameMode(gameModeNormalAIRadio);
     if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
 
@@ -221,12 +229,7 @@ const gameProcess = (function () {
     return false;
   }
 
-  function chooseCellForAIMove() {
-    if (gameMode === 'easy-ai') return chooseCellForEasyAIMove();
-    if (gameMode === 'hard-ai') return chooseCellForHardAIMove();
-  }
-
-  function chooseCellForEasyAIMove() {
+  function chooseRandomCellForAIMove() {
     let index;
     do {
       index = Math.floor(Math.random() * AMOUNT_OF_CELLS);
@@ -234,7 +237,7 @@ const gameProcess = (function () {
     return index;
   }
 
-  function chooseCellForHardAIMove() {
+  function chooseCellForAIMove() {
     const board = [...gameBoard.board];
     let bestIndex;
     let bestScore = -Infinity;
@@ -270,16 +273,7 @@ const gameProcess = (function () {
     boardCells.forEach(cell => {
       cell.addEventListener('click', makeAIMove);
     });
-    if (playerX.isAI) {
-      // This condition is to make first AI move random
-      if (gameMode === 'hard-ai') {
-        gameMode = 'easy-ai';
-        makeAIMove();
-        setTimeout(() => gameMode = 'hard-ai', 500);
-      } else {
-        makeAIMove();
-      }
-    }
+    if (playerX.isAI) makeRandomAiMove();
   }
 
   function getGameState() {
@@ -310,8 +304,26 @@ const gameProcess = (function () {
     }
   }
 
+  function makeRandomAiMove() {
+    if (!isGameOver) {
+      let intervalId = setInterval(() => {
+        if (checkIfAICanMove()) {
+          const index = chooseRandomCellForAIMove();
+          gameBoard.addMove(index);
+          watchGameProcess();
+          clearInterval(intervalId);
+        }
+      }, 100);
+    }
+  }
+
   function minimax(board, isAIMove, depth) {
     // The checks are executed for the previous move, that's why !isAIMove
+    let depthForEasyAI = Math.floor(Math.random() * 2) + 1;
+    if (gameMode === 'easy-ai' && depth === depthForEasyAI) return 0;
+    let depthForNormalAI = Math.floor(Math.random() * 2) + 2;
+    if (gameMode === 'normal-ai' && depth === depthForNormalAI) return 0;
+
     if (checkIfWin(board)) return (!isAIMove) ? 10 - depth : -10 + depth;
     if (checkIfTie(board)) return 0;
 
@@ -361,8 +373,7 @@ const gameProcess = (function () {
     }
 
     if (gameMode === 'friend') gamePVP();
-    if (gameMode === 'easy-ai') gamePVE();
-    if (gameMode === 'hard-ai') gamePVE();
+    else gamePVE();
   }
 
   function toggleWhichTurn() {
