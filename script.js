@@ -30,13 +30,8 @@ let playerX, playerO;
     if (playerNameInput === playerONameInput) return false;
   }
 
-  function assignMarkToPlayer(playerNameInput) {
-    if (playerNameInput === playerXNameInput) return 'X';
-    if (playerNameInput === playerONameInput) return 'O';
-  }
-
   function chooseAIGameMode(gameModeRadio) {
-    if (gameModeRadio === I) chosenGameMode = 'easy-ai';
+    if (gameModeRadio === gameModeEasyAIRadio) chosenGameMode = 'easy-ai';
     if (gameModeRadio === gameModeHardAIRadio) chosenGameMode = 'hard-ai';
     selectAI();
     if (playerMarkChoiceForm.classList.contains('hidden')) {
@@ -74,7 +69,6 @@ let playerX, playerO;
     return {
       name: playerNameInput.value,
       isAI,
-      mark: assignMarkToPlayer(playerNameInput),
       isMove: assignIsMoveToPlayer(playerNameInput),
       wins: 0
     };
@@ -121,18 +115,18 @@ let playerX, playerO;
     chooseGameMode(gameModeFriendRadio);
   });
   gameModeEasyAIRadio.addEventListener('click', () => {
-    chooseGameMode(I);
+    chooseGameMode(gameModeEasyAIRadio);
   });
   gameModeHardAIRadio.addEventListener('click', () => {
     chooseGameMode(gameModeHardAIRadio);
   });
 
   playerMarkXRadio.addEventListener('click', () => {
-    if (gameModeEasyAIRadio.checked) chooseGameMode(I);
+    if (gameModeEasyAIRadio.checked) chooseGameMode(gameModeEasyAIRadio);
     if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkORadio.addEventListener('click', () => {
-    if (gameModeEasyAIRadio.checked) chooseGameMode(I);
+    if (gameModeEasyAIRadio.checked) chooseGameMode(gameModeEasyAIRadio);
     if (gameModeHardAIRadio.checked) chooseGameMode(gameModeHardAIRadio);
   });
 
@@ -195,6 +189,12 @@ const gameProcess = (function () {
   let gameMode;
   let isGameOver = false;
 
+  function checkIfPlayerMove() {
+    if (playerX.isAI && playerX.isMove) return false;
+    if (playerO.isAI && playerO.isMove) return false;
+    return true;
+  }
+
   function checkIfTie() {
     for (let i = 0; i < AMOUNT_OF_CELLS; i++) {
       if (!gameBoard.board[i]) return false;
@@ -225,6 +225,10 @@ const gameProcess = (function () {
 
   }
 
+  function gamePVE() {
+
+  }
+
   function getGameState() {
     if (checkIfWin()) return (playerX.isMove) ? playerX : playerO;
     else if (checkIfTie()) return 'tie';
@@ -233,7 +237,7 @@ const gameProcess = (function () {
 
   function makePlayerMove(index) {
     if (!isGameOver) {
-      if (gameBoard.checkIfMovePossible(index)) {
+      if (gameBoard.checkIfMovePossible(index) && checkIfPlayerMove()) {
         gameBoard.addMove(index);
         watchGameProcess();
       }
@@ -321,7 +325,7 @@ const AMOUNT_OF_CELLS = boardCells.length;
   const gameParametersFormWrapper = document.querySelector('.game-parameters-form-wrapper');
   const gameParametersForm = document.querySelector('.game-parameters-form');
   const gameModeFriendRadio = document.querySelector('[data-game-mode="friend"]');
-  const I = document.querySelector('[data-game-mode="easy-ai"]');
+  const gameModeEasyAIRadio = document.querySelector('[data-game-mode="easy-ai"]');
   const gameModeHardAIRadio = document.querySelector('[data-game-mode="hard-ai"]');
   const playerXNameInput = document.querySelector('.game-parameters-form__name-input[name="playerX-name"]');
   const playerONameInput = document.querySelector('.game-parameters-form__name-input[name="playerO-name"]');
@@ -342,19 +346,19 @@ const AMOUNT_OF_CELLS = boardCells.length;
     chooseGameMode(gameModeFriendRadio);
   });
   gameModeEasyAIRadio.addEventListener('click', () => {
-    chooseGameMode(I);
+    chooseGameMode(gameModeEasyAIRadio);
   });
   gameModeHardAIRadio.addEventListener('click', () => {
     chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkXRadio.addEventListener('click', () => {
     gameModeEasyAIRadio.checked
-      ? chooseGameMode(I)
+      ? chooseGameMode(gameModeEasyAIRadio)
       : chooseGameMode(gameModeHardAIRadio);
   });
   playerMarkORadio.addEventListener('click', () => {
     gameModeEasyAIRadio.checked
-      ? chooseGameMode(I)
+      ? chooseGameMode(gameModeEasyAIRadio)
       : chooseGameMode(gameModeHardAIRadio);
   });
 
@@ -369,13 +373,13 @@ const AMOUNT_OF_CELLS = boardCells.length;
     clearChosenForAiInputs();
     if (playerMarkXRadio.checked) {
       playerONameInput.setAttribute('readonly', '');
-      radioButton === I
+      radioButton === gameModeEasyAIRadio
         ? playerONameInput.value = 'Easy AI'
         : playerONameInput.value = 'Hard AI';
     }
     if (playerMarkORadio.checked) {
       playerXNameInput.setAttribute('readonly', '');
-      radioButton === I
+      radioButton === gameModeEasyAIRadio
         ? playerXNameInput.value = 'Easy AI'
         : playerXNameInput.value = 'Hard AI';
     }
@@ -390,7 +394,7 @@ const AMOUNT_OF_CELLS = boardCells.length;
     } else {
       chooseAiPlayer(radioButton);
       playerMarkChoiceForm.classList.remove('hidden');
-      radioButton === I
+      radioButton === gameModeEasyAIRadio
         ? chosenGameMode = 'easy-ai'
         : chosenGameMode = 'hard-ai';
     }
