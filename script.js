@@ -189,10 +189,16 @@ const gameProcess = (function () {
   let gameMode;
   let isGameOver = false;
 
-  function checkIfPlayerMove() {
-    if (playerX.isAI && playerX.isMove) return false;
-    if (playerO.isAI && playerO.isMove) return false;
-    return true;
+  function checkIfAICanMove() {
+    if (playerX.isAI && playerX.isMove) return true;
+    if (playerO.isAI && playerO.isMove) return true;
+    return false;
+  }
+
+  function checkIfPlayerCanMove() {
+    if (!playerX.isAI && playerX.isMove) return true;
+    if (!playerO.isAI && playerO.isMove) return true;
+    return false;
   }
 
   function checkIfTie() {
@@ -220,13 +226,30 @@ const gameProcess = (function () {
     return false;
   }
 
+  function chooseCellForAIMove() {
+    if (gameMode === 'easy-ai') return chooseCellForEasyAIMove();
+    if (gameMode === 'hard-ai') return chooseCellForHardAIMove();
+  }
+
+  function chooseCellForEasyAIMove() {
+    let index;
+    do {
+      index = Math.floor(Math.random() * AMOUNT_OF_CELLS);
+    } while (!gameBoard.checkIfMovePossible(index));
+    return index;
+  }
 
   function gamePVP() {
-
+    boardCells.forEach(cell => {
+      cell.removeEventListener('click', makeAIMove);
+    });
   }
 
   function gamePVE() {
-
+    boardCells.forEach(cell => {
+      cell.addEventListener('click', makeAIMove);
+    });
+    if (playerX.isAI) setTimeout(makeAIMove, 500);
   }
 
   function getGameState() {
@@ -235,9 +258,22 @@ const gameProcess = (function () {
     else return 'continue';
   }
 
+  function makeAIMove() {
+    if (!isGameOver) {
+      let intervalId = setInterval(() => {
+        if (checkIfAICanMove()) {
+          const index = chooseCellForAIMove();
+          gameBoard.addMove(index);
+          watchGameProcess();
+          clearInterval(intervalId);
+        }
+      }, 100);
+    }
+  }
+
   function makePlayerMove(index) {
     if (!isGameOver) {
-      if (gameBoard.checkIfMovePossible(index) && checkIfPlayerMove()) {
+      if (checkIfPlayerCanMove() && gameBoard.checkIfMovePossible(index)) {
         gameBoard.addMove(index);
         watchGameProcess();
       }
@@ -275,7 +311,13 @@ const gameProcess = (function () {
   }
 
   function toggleWhichTurn() {
-    [playerX.isMove, playerO.isMove] = [playerO.isMove, playerX.isMove];
+    let playerXIsMove = playerX.isMove;
+    let playerOisMove = playerO.isMove;
+    playerX.isMove = false;
+    playerO.isMove = false;
+    setTimeout(() => {
+      [playerX.isMove, playerO.isMove] = [playerOisMove, playerXIsMove];
+    }, 500);
   }
 
   function watchGameProcess() {
