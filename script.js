@@ -177,10 +177,9 @@ const gameBoard = (function () {
   }
 
   function showWinningCells(cellsIndexesArray) {
-    for (let i = 0; i < cellsIndexesArray.length; i++) {
-      let cellIndex = cellsIndexesArray[i];
+    cellsIndexesArray.forEach(cellIndex => {
       boardCells[cellIndex].firstChild.style.scale = '1.5';
-    }
+    });
   }
 
   return {
