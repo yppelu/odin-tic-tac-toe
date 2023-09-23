@@ -176,10 +176,18 @@ const gameBoard = (function () {
     boardCells[index].append(svg);
   }
 
+  function showWinningCells(cellsIndexesArray) {
+    for (let i = 0; i < cellsIndexesArray.length; i++) {
+      let cellIndex = cellsIndexesArray[i];
+      boardCells[cellIndex].firstChild.style.scale = '1.5';
+    }
+  }
+
   return {
     board,
     addMove,
-    clearBoard
+    clearBoard,
+    showWinningCells
   };
 })();
 
@@ -282,6 +290,20 @@ const gameProcess = (function () {
     else return 'continue';
   }
 
+  function getWinningCells(board) {
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
+      [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+    ];
+    for (let i = 0; i < winningCombinations.length; i++) {
+      const [i1, i2, i3] = winningCombinations[i];
+      if (board[i1] && board[i1] === board[i2] && board[i1] === board[i3]) {
+        console.log(winningCombinations[i]);
+        return winningCombinations[i];
+      }
+    }
+  }
+
   function makeAIMove() {
     if (!isGameOver) {
       let intervalId = setInterval(() => {
@@ -349,14 +371,16 @@ const gameProcess = (function () {
 
   function showTie() {
     nextRoundBlockTitle.textContent = 'It is a tie!';
-    nextRoundBlock.classList.remove('hidden');
+    setTimeout(() => { nextRoundBlock.classList.remove('hidden'); }, 500);
   }
 
   function showWin(winner) {
+    const winningCells = getWinningCells(gameBoard.board);
+    setTimeout(gameBoard.showWinningCells, 500, winningCells);
     nextRoundBlockTitle.textContent = `${winner.name} has won!`;
     winner.wins++;
     statistics.refreshStatistics();
-    nextRoundBlock.classList.remove('hidden');
+    setTimeout(() => { nextRoundBlock.classList.remove('hidden'); }, 1000);
   }
 
   function startGame(chosenGameMode) {
@@ -392,10 +416,8 @@ const gameProcess = (function () {
       toggleWhichTurn();
     } else {
       finishRound();
-      setTimeout(() => {
-        if (gameState === 'tie') showTie();
-        else showWin(gameState);
-      }, 500);
+      if (gameState === 'tie') showTie();
+      else showWin(gameState);
     }
   }
 
