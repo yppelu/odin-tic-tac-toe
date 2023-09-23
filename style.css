@@ -229,6 +229,7 @@ body {
   background-color: var(--section-bg-clr);
   border-radius: 8px;
   box-shadow: 0 0 5px 2px var(--shadow-clr);
+  text-align: center;
 
   border: 2px solid var(--text-clr);
   padding: 16px;
@@ -236,7 +237,6 @@ body {
 
 .game-next-round__title {
   font-size: 1.5rem;
-  text-align: center;
   margin-bottom: 16px;
 }
 
