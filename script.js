@@ -392,8 +392,10 @@ const gameProcess = (function () {
       toggleWhichTurn();
     } else {
       finishRound();
-      if (gameState === 'tie') showTie();
-      else showWin(gameState);
+      setTimeout(() => {
+        if (gameState === 'tie') showTie();
+        else showWin(gameState);
+      }, 500);
     }
   }
 
