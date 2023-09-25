@@ -407,7 +407,7 @@ const gameProcess = (function () {
     else gamePVE();
   }
 
-  function toggleWhichTurn() {
+  function toggleTurn() {
     let playerXIsMove = playerX.isMove;
     let playerOIsMove = playerO.isMove;
     playerX.isMove = false;
@@ -420,7 +420,7 @@ const gameProcess = (function () {
   function watchGameProcess() {
     let gameState = getGameState();
     if (gameState === 'continue') {
-      toggleWhichTurn();
+      toggleTurn();
     } else {
       finishRound();
       if (gameState === 'tie') showTie();
