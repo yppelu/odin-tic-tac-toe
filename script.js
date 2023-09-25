@@ -21,14 +21,30 @@ let playerX, playerO;
 
   let chosenGameMode;
 
+  class Player {
+    _name;
+    _isAI;
+    isMove;
+    wins = 0;
+
+    constructor(playerNameInput, isAI = false) {
+      if (!playerNameInput.value) applyDefaultToNameInputs();
+      this._name = playerNameInput.value;
+      this._isAI = isAI;
+      this.isMove = (playerNameInput === playerXNameInput) ? true : false;
+    }
+
+    get name() {
+      return this._name;
+    }
+    get isAI() {
+      return this._isAI;
+    }
+  }
+
   function applyDefaultToNameInputs() {
     if (playerXNameInput.value === '') playerXNameInput.value = 'Player X';
     if (playerONameInput.value === '') playerONameInput.value = 'Player O';
-  }
-
-  function assignIsMoveToPlayer(playerNameInput) {
-    if (playerNameInput === playerXNameInput) return true;
-    if (playerNameInput === playerONameInput) return false;
   }
 
   function chooseAIGameMode(gameModeRadio) {
@@ -66,26 +82,16 @@ let playerX, playerO;
     }
   }
 
-  function createPlayer(playerNameInput, isAI = false) {
-    if (!playerNameInput.value) applyDefaultToNameInputs();
-    return {
-      name: playerNameInput.value,
-      isAI,
-      isMove: assignIsMoveToPlayer(playerNameInput),
-      wins: 0
-    };
-  }
-
   function createPlayers() {
     if (playerXNameInput.hasAttribute('readonly')) {
-      playerX = createPlayer(playerXNameInput, true);
-      playerO = createPlayer(playerONameInput);
+      playerX = new Player(playerXNameInput, true);
+      playerO = new Player(playerONameInput);
     } else if (playerONameInput.hasAttribute('readonly')) {
-      playerX = createPlayer(playerXNameInput);
-      playerO = createPlayer(playerONameInput, true);
+      playerX = new Player(playerXNameInput);
+      playerO = new Player(playerONameInput, true);
     } else {
-      playerX = createPlayer(playerXNameInput);
-      playerO = createPlayer(playerONameInput);
+      playerX = new Player(playerXNameInput);
+      playerO = new Player(playerONameInput);
     }
   }
 
@@ -378,8 +384,10 @@ const gameProcess = (function () {
     setTimeout(gameBoard.showWinningCells, 500, winningCells);
     nextRoundBlockTitle.textContent = `${winner.name} has won!`;
     winner.wins++;
-    statistics.refreshStatistics();
-    setTimeout(() => { nextRoundBlock.classList.remove('hidden'); }, 1000);
+    setTimeout(() => {
+      statistics.refreshStatistics();
+      nextRoundBlock.classList.remove('hidden');
+    }, 1000);
   }
 
   function startGame(chosenGameMode) {
@@ -401,11 +409,11 @@ const gameProcess = (function () {
 
   function toggleWhichTurn() {
     let playerXIsMove = playerX.isMove;
-    let playerOisMove = playerO.isMove;
+    let playerOIsMove = playerO.isMove;
     playerX.isMove = false;
     playerO.isMove = false;
     setTimeout(() => {
-      [playerX.isMove, playerO.isMove] = [playerOisMove, playerXIsMove];
+      [playerX.isMove, playerO.isMove] = [playerOIsMove, playerXIsMove];
     }, 500);
   }
 
