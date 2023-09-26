@@ -22,16 +22,13 @@ let playerX, playerO;
   let chosenGameMode;
 
   class Player {
-    _name;
-    _isAI;
-    isMove;
-    wins = 0;
-
     constructor(playerNameInput, isAI = false) {
       if (!playerNameInput.value) applyDefaultToNameInputs();
+
       this._name = playerNameInput.value;
       this._isAI = isAI;
-      this.isMove = (playerNameInput === playerXNameInput) ? true : false;
+      this._isMove = (playerNameInput === playerXNameInput) ? true : false;
+      this.wins = 0;
     }
 
     get name() {
@@ -39,6 +36,12 @@ let playerX, playerO;
     }
     get isAI() {
       return this._isAI;
+    }
+    get isMove() {
+      return this._isMove;
+    }
+    set isMove(value) {
+      this._isMove = value;
     }
   }
 
